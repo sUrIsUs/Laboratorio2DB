@@ -1,0 +1,408 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.mycompany.helloworld.ejemplopostgresql;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author
+ */
+public class MainFrame extends javax.swing.JFrame {
+
+    // Valores para la conexión a la base de datos (su nombre, URL, Usuario y Contraseña)
+    private static final String DB_NAME = "prueba";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
+    private static final String DB_USER = "postgres";
+    private static final String DB_PWD = "admin";
+    
+    // Mensajes de error
+    private static final String ERROR_MSG_INSERT = "Error al intentar dar de alta a esta persona.";
+    private static final String ERROR_MSG_INSERT_INPUT = "No se admiten campos vacíos.";
+    
+    // Objetos utilizados para interactuar con la base de datos
+    // (conexión, realizar consultas con y sin parámetros, y recibir los resultados)
+    private static Connection conn = null;
+    private static Statement query = null;
+    private static PreparedStatement p_query = null;
+    private static ResultSet result = null;
+
+
+
+    /**
+     * Creates new form MainFrame
+     */
+    public MainFrame() throws SQLException {
+        initComponents();
+        label_error.setVisible(false);
+
+        // Una vez creado el formulario e inicializado sus componentes ↑↑↑
+        // nos enlazamos con el DBMS para conectarnos a la base de datos solicitada
+        // utilizando las credenciales correspondientes
+        conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
+
+        // una vez conectados, nuestro programa creará las tabas que sean necesarias
+        // para funcionar, en el caso de que ya no estén creadas
+        // (de ahí el "IF NOT EXISTS" luego del "CREATE TABLE").
+        // En este ejemplo básico vamos a crear la tabla "ejemplo_personas"
+        query = conn.createStatement();
+        query.execute("CREATE TABLE IF NOT EXISTS ejemplo_personas("
+                + "DNI INTEGER NOT NULL, "
+                + "nombre TEXT NOT NULL, "
+                + "edad INTEGER NOT NULL, "
+                + "PRIMARY KEY (DNI))");
+
+        // Inicializamos/Actualizamos la lista de personas del formulario
+        // para que muestre las personas que ya están cargadas en el sistema
+        updateListaResultados();
+    }
+
+    private void updateListaResultados() throws SQLException {
+        // realiza la consulta "SELECT * FROM ejemplo_personas" a la base de datos
+        // utilizando la conexión ya establecida (almacenada en la variable conn).
+        // Finalmente muestra el resultado de la consulta en la tabla principal
+        // del programa (jTablaPersonas).
+        query = conn.createStatement();
+        result = query.executeQuery("SELECT * FROM ejemplo_personas");
+        jTablaPersonas.setModel(resultToTable(result));
+    }
+
+    private static DefaultTableModel resultToTable(ResultSet rs) throws SQLException {
+        // Esta es una función auxiliar que les permite convertir los resultados de las
+        // consultas (ResultSet) a un modelo interpretable para la tabla mostrada en pantalla
+        // (es decir, para un objeto de tipo JTable, ver línea 81)
+        ResultSetMetaData metaData = rs.getMetaData();
+
+        // creando las culmnas de la tabla
+        Vector<String> columnNames = new Vector<String>();
+        int columnCount = metaData.getColumnCount();
+        for (int column = 1; column <= columnCount; column++) {
+            columnNames.add(metaData.getColumnName(column));
+        }
+
+        // creando las filas de la tabla con los resultados de la consulta
+        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<Object>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                vector.add(rs.getObject(columnIndex));
+            }
+            data.add(vector);
+        }
+
+        return new DefaultTableModel(data, columnNames);
+    }
+
+    private void updateForm() throws SQLException {
+        // actualizar y limpiar el formulario luego de una operación exitosa
+        jsDni.setValue(0);
+        jtNombre.setText("");
+        jsEdad.setValue(0);
+        jsDniDelete.setValue(0);
+        label_error.setVisible(false);
+        updateListaResultados();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTablaPersonas = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jsDni = new javax.swing.JSpinner();
+        jLabel2 = new javax.swing.JLabel();
+        jtNombre = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jsEdad = new javax.swing.JSpinner();
+        jbInsertar = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jsDniDelete = new javax.swing.JSpinner();
+        jbEliminar = new javax.swing.JButton();
+        label_error = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Base de Datos (Ejemplo Básico de Conexión e Interacción)");
+
+        jTablaPersonas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTablaPersonas);
+        jTablaPersonas.getAccessibleContext().setAccessibleName("");
+        jTablaPersonas.getAccessibleContext().setAccessibleDescription("");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Lista de Personas", jPanel1);
+
+        jLabel1.setText("DNI:");
+
+        jLabel2.setText("Nombre:");
+
+        jLabel3.setText("Edad:");
+
+        jbInsertar.setText("Insertar");
+        jbInsertar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbInsertarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jsEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jbInsertar)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel1))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jsDni, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                                .addComponent(jtNombre)))))
+                .addContainerGap(358, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jsDni, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jsEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jbInsertar)
+                .addContainerGap(172, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Insertar", jPanel2);
+
+        jLabel4.setText("DNI:");
+
+        jbEliminar.setText("Eliminar");
+        jbEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbEliminarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jbEliminar)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jsDniDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(382, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jsDniDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jbEliminar)
+                .addContainerGap(229, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Eliminar", jPanel3);
+
+        label_error.setForeground(new java.awt.Color(255, 0, 0));
+        label_error.setText("mensajes de error");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane1)
+            .addComponent(label_error, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(label_error, javax.swing.GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.getAccessibleContext().setAccessibleName("tab_panel");
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jbInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbInsertarActionPerformed
+        // Antes de realizar la inserción, primero controlar que los campos tengan valores
+        // válidos. En este caso, por ser un ejemplo, sólo se controla por que el campo "nombre"
+        // del usuario no esté vacío, pero para su versión real pueden realizar controles más elaborados.
+        // (por ejemplo, que los DNIs y la edad sean números positivos, etc.)
+        if (jtNombre.getText().trim().equals("")) {
+            label_error.setText(ERROR_MSG_INSERT_INPUT);
+            label_error.setVisible(true);
+            return;
+        }
+
+        try {
+            // creamos una consulta INSERT parametrizada por los valores que queremos insertar
+            // en este caso, son 3, el DNI, el nombre y la edad, en orden: (?, ?, ?)
+            p_query = conn.prepareStatement("INSERT INTO ejemplo_personas VALUES (?, ?, ?)");
+
+            // luego asignamos los valores reales a esos parámetros, dando primero su posición y luego su valor
+            // del siguiente modo: p_query.setTIPO(POSICIÓN, VALOR)
+            p_query.setInt(1, (int) jsDni.getValue());       // -> parámetro en la posición 1 es DNI, es un entero (setInt)
+            p_query.setString(2, jtNombre.getText().trim()); // -> parámetro en la posición 2 es Nombre, es un string (setString)
+            p_query.setInt(3, (int) jsEdad.getValue());      // -> parámetro en la posición 3 es Edad, es un entero (setInt)
+            
+            // ejecutamos la consulta con los valores asignados
+            p_query.executeUpdate();
+            
+            // finalmente actualizamos nuestra tabla mostrando la lista de personas en el formulario principal
+            updateForm();
+        } catch (Exception ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            label_error.setText(ERROR_MSG_INSERT);
+            label_error.setVisible(true);
+        }
+    }//GEN-LAST:event_jbInsertarActionPerformed
+
+    private void jbEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEliminarActionPerformed
+        // Como este es un ejemplo, no hemos realizado controles, pero en la versión final
+        // sería bueno que el programa controle por la existencia del elemento, antes de ser
+        // eliminado, y que le pregunte al usuario y realmente desea eliminarlo o, en el caso de
+        // no existir el valor, que le indique que ese valor no existe.
+        try {
+            
+            // creamos una consulta DELETE parametrizada por el valor que identificador del valor queremos eliminar
+            // en este caso, el DNI,(indicado nuevamente con ?)
+            p_query = conn.prepareStatement("DELETE FROM ejemplo_personas WHERE dni = ?");
+            // luego asignamos el valor dado por el usuario a ese parámetro (?), dando primero su posición y luego su valor
+            // como se hizo anteriormente en el INSERT
+            p_query.setInt(1, (int) jsDniDelete.getValue());
+             // ejecutamos la consulta con el valor asignado
+            p_query.executeUpdate();
+            
+            // finalmente actualizamos nuestra tabla mostrando la lista de personas en el formulario principal
+            updateForm();
+        } catch (Exception ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jbEliminarActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    new MainFrame().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTablaPersonas;
+    private javax.swing.JButton jbEliminar;
+    private javax.swing.JButton jbInsertar;
+    private javax.swing.JSpinner jsDni;
+    private javax.swing.JSpinner jsDniDelete;
+    private javax.swing.JSpinner jsEdad;
+    private javax.swing.JTextField jtNombre;
+    private javax.swing.JLabel label_error;
+    // End of variables declaration//GEN-END:variables
+}
