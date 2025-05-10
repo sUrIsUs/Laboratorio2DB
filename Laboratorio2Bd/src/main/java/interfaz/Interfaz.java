@@ -18,10 +18,55 @@ public class Interfaz extends javax.swing.JFrame {
         
         query = conn.createStatement();
         query.execute("CREATE TABLE IF NOT EXISTS Sitios("
-                + "S_Cod VARCHAR(10) NOT NULL PRIMARY KEY, "
-                + "S_Localidad VARCHAR(30) NOT NULL)");
+                + "S_Cod VARCHAR(20) PRIMARY KEY, "
+                + "S_Localidad VARCHAR(30) NOT NULL))");
         
-        query = 
+        query.execute("CREATE TABLE IF NOT EXISTS Cuadriculas("
+                + "Cu_Cod VARCHAR(20) PRIMARY KEY, "
+                + "S_Cod_Dividido, "
+                + "FOREIGN KEY (S_Cod_Dividido) FROM Sitios(S_Cod))");
+    
+        query.execute("CREATE TABLE IF NOT EXISTS Cajas("
+                + "Ca_Cod VARCHAR(20) PRIMARY KEY, "
+                + "Ca_Fecha DATE() NOT NULL, "
+                + "Ca_Lugar VARCHAR(50))");
+        
+        query.execute("CREATE TABLE IF NOT EXISTS Personas("
+                + "P_DNI CHAR(8) PRIMARY KEY, "
+                + "P_Nombre VARCHAR(50) NOT NULL, "
+                + "P_Apellido VARCHAR(50) NOT NULL, "
+                + "P_Email VARCHAR(70) NOT NULL UNIQUE, "
+                + "P_Telefono VARCHAR(15) NOT NULL UNIQUE)");
+        
+        query.execute("CREATE TABLE IF NOT EXISTS Objetos("
+                + "O_Cod VARCHAR(20) PRIMARY KEY, "
+                + "O_Nombre VARCHAR(50) NOT NULL UNIQUE, "
+                + "O_TipoExtraccion VARCHAR(50) NOT NULL, "
+                + "O_Alto DOUBLE NOT NULL, "
+                + "O_Largo DOUBLE NOT NULL, "
+                + "O_Espesor DOUBLE NOT NULL, "
+                + "O_Peso DOUBLE NOT NULL, "
+                + "O_Cantidad INT NOT NULL, "
+                + "O_FechaRegistro DATE() NOT NULL, "
+                + "O_Descripcion VARCHAR(200) NOT NULL, "
+                + "O_Origen VARCHAR(50), "
+                + "Cu_Cod_Asocia VARCHAR(20) PRIMARY KEY, "
+                + "Ca_Cod_Contiene VARCHAR(20) PRIMARY KEY, "
+                + "P_DNI_Ingresa CHAR(8) PRIMARY KEY, "
+                + "O_Es ENUM('Liticos, 'Ceramicos') NOT NULL, "
+                + "FOREIGN KEY (Cu_Cod_Asocia) FROM Cuadriculas(Cu_Cod))"
+                + "FOREIGN KEY (Ca_Cod_Contiene) FROM Cajas(Ca_Cod))"
+                + "FOREIGN KEY (P_DNI_Ingresa) FROM Personas(P_DNI))");
+        
+        query.execute("CREATE TABLE IF NOT EXIST Liticos("
+                + "O_Cod VARCHAR(20) PRIMARY KEY, "
+                + "L_FechaCreacion DATE NOT NULL"
+                + "FOREIGN KEY (O_Cod) FROM Objetos(O_Cod))");
+        
+        query.execute("CREATE TABLE IF NOT EXIST Ceramicos("
+                + "O_Cod VARCHAR(20) PRIMARY KEY, "
+                + "L_Color VARCHAR(20) NOT NULL"
+                + "FOREIGN KEY (O_Cod) FROM Objetos(O_Cod))");
     }
 
     @SuppressWarnings("unchecked")
