@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package interfaz;
+package app;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
-public class Interfaz extends javax.swing.JFrame {
+public class App extends javax.swing.JFrame {
     
     LocalDate now = LocalDate.now();
     int day = now.getDayOfMonth(), month = now.getMonthValue(), year = now.getYear();
@@ -34,7 +34,7 @@ public class Interfaz extends javax.swing.JFrame {
     private static Statement query = null;
     private static Connection conn = null;
     
-    public Interfaz() throws SQLException {
+    public App() throws SQLException {
         
         initComponents();
         // Muestro fecha
@@ -43,28 +43,27 @@ public class Interfaz extends javax.swing.JFrame {
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
         query = conn.createStatement();
         
-        System.out.println("Llegue aca 1");
         query.execute("CREATE TABLE IF NOT EXISTS Sitios("
                 + "S_Cod VARCHAR(20) PRIMARY KEY, "
                 + "S_Localidad VARCHAR(30) NOT NULL)");
-        System.out.println("Llegue aca 2");
+     
         query.execute("CREATE TABLE IF NOT EXISTS Cuadriculas("
                 + "Cu_Cod VARCHAR(20) PRIMARY KEY, "
                 + "S_Cod_Dividido VARCHAR(20), "
                 + "FOREIGN KEY (S_Cod_Dividido) REFERENCES Sitios(S_Cod))");
-    System.out.println("Llegue aca 3");
+
         query.execute("CREATE TABLE IF NOT EXISTS Cajas("
                 + "Ca_Cod VARCHAR(20) PRIMARY KEY, "
                 + "Ca_Fecha DATE NOT NULL, "
                 + "Ca_Lugar VARCHAR(50) NOT NULL)");
-        System.out.println("Llegue aca 4");
+
         query.execute("CREATE TABLE IF NOT EXISTS Personas("
                 + "P_DNI CHAR(8) PRIMARY KEY, "
                 + "P_Nombre VARCHAR(50) NOT NULL, "
                 + "P_Apellido VARCHAR(50) NOT NULL, "
                 + "P_Email VARCHAR(70) NOT NULL UNIQUE, "
                 + "P_Telefono VARCHAR(15) NOT NULL UNIQUE)");
-        System.out.println("Llegue aca 5");
+      
         query.execute(/*"CREATE TYPE tipo AS ENUM('L', 'C'); "*/
                  "CREATE TABLE IF NOT EXISTS Objetos("
                 + "O_Cod VARCHAR(20) PRIMARY KEY, "
@@ -85,17 +84,17 @@ public class Interfaz extends javax.swing.JFrame {
                 + "FOREIGN KEY (Cu_Cod_Asocia) REFERENCES Cuadriculas(Cu_Cod), "
                 + "FOREIGN KEY (Ca_Cod_Contiene) REFERENCES Cajas(Ca_Cod), "
                 + "FOREIGN KEY (P_DNI_Ingresa) REFERENCES Personas(P_DNI))");
-        System.out.println("Llegue aca 6");
+       
         query.execute("CREATE TABLE IF NOT EXISTS Liticos("
                 + "O_Cod VARCHAR(20) PRIMARY KEY, "
                 + "L_FechaCreacion INT NOT NULL, "
                 + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod))");
-        System.out.println("Llegue aca 7");
+        
         query.execute("CREATE TABLE IF NOT EXISTS Ceramicos("
                 + "O_Cod VARCHAR(20) PRIMARY KEY, "
                 + "C_Color VARCHAR(20) NOT NULL, "
                 + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod))");
-        cargaSQL();
+//        cargaSQL();
     }
 
     @SuppressWarnings("unchecked")
@@ -112,7 +111,6 @@ public class Interfaz extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(1280, 720));
         setResizable(false);
 
         background.setMaximumSize(new java.awt.Dimension(1000, 600));
@@ -233,13 +231,13 @@ public class Interfaz extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         FlatMacLightLaf.setup();
@@ -247,9 +245,9 @@ public class Interfaz extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new Interfaz().setVisible(true);
+                    new App().setVisible(true);
                 } catch (SQLException ex) {
-                    Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
