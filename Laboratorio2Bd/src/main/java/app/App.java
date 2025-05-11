@@ -4,6 +4,7 @@
  */
 package app;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.toedter.calendar.JDateChooser;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,19 +15,23 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 
 public class App extends javax.swing.JFrame {
-    
+    // Variables
+    int tuplaSeleccionada;
     LocalDate now = LocalDate.now();
     int day = now.getDayOfMonth(), month = now.getMonthValue(), year = now.getYear();
     String [] months = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
 
-    // 
+    // Constantes para la base de datos
     private static final String DB_NAME = "archeologics";
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
     private static final String DB_USER = "postgres";
@@ -37,9 +42,12 @@ public class App extends javax.swing.JFrame {
     
     public App() throws SQLException {
         
+        // Inicio ejecución
         initComponents();
+        
         // Muestro fecha
         todayDate.setText("Hoy es " + day + " de " + months[month - 1] + " de " + year);
+        
         // Creo tablas
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
         query = conn.createStatement();
@@ -95,6 +103,8 @@ public class App extends javax.swing.JFrame {
                 + "O_Cod VARCHAR(20) PRIMARY KEY, "
                 + "C_Color VARCHAR(20) NOT NULL, "
                 + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod))");
+        
+        // Cargo la base de datos si no fue cargada previamente
 //        cargaSQL();
     }
     
@@ -110,11 +120,37 @@ public class App extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField2 = new javax.swing.JTextField();
         background = new javax.swing.JPanel();
-        separadorVerticalContainer = new javax.swing.JSeparator();
         separadorHorizontalHeader = new javax.swing.JSeparator();
+        separadorVerticalContainer = new javax.swing.JSeparator();
         contenedor = new javax.swing.JPanel();
+        cajasPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablasCajas = new javax.swing.JTable();
+        modificarCajasBtn = new javax.swing.JButton();
+        agregarCajasBtn = new javax.swing.JButton();
+        eliminarCajasBtn = new javax.swing.JButton();
+        seleccionarVistaCajasBtn = new javax.swing.JButton();
+        arqueologosPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaPersonas = new javax.swing.JTable();
+        seleccionarVistaPersonasBtn = new javax.swing.JButton();
+        modificarPersonasBtn = new javax.swing.JButton();
+        agregarPersonasBtn = new javax.swing.JButton();
+        eliminarPersonasBtn = new javax.swing.JButton();
+        agregarPersonasPanel = new javax.swing.JPanel();
+        modificarPersonasPanel = new javax.swing.JPanel();
+        eliminarPersonasPanel = new javax.swing.JPanel();
+        resumePanel = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        cantidadArqueologos = new javax.swing.JTextField();
+        cantidadCuadriculas = new javax.swing.JTextField();
+        cantidadObjetos = new javax.swing.JTextField();
+        cantidadCajas = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
         objetosPanel = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -143,24 +179,20 @@ public class App extends javax.swing.JFrame {
         pesoPromedioObjetos = new javax.swing.JTextField();
         pesoMinimoObjetos = new javax.swing.JTextField();
         separadorObjetos2 = new javax.swing.JSeparator();
-        infoGeneralPanel = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        arqueologosPanel = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
+        agregarObjetosPanel = new javax.swing.JPanel();
+        modificarObjetosPanel = new javax.swing.JPanel();
+        eliminarObjetosPanel = new javax.swing.JPanel();
         header = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
         todayDate = new javax.swing.JLabel();
         menu = new javax.swing.JPanel();
-        infoGeneralBtn = new javax.swing.JButton();
+        resumenBtn = new javax.swing.JButton();
         objetosBtn = new javax.swing.JButton();
         arqueologosBtn = new javax.swing.JButton();
-
-        jTextField2.setText("jTextField2");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
+        cajasBtn = new javax.swing.JButton();
+        eliminarCajasPanel = new javax.swing.JPanel();
+        modificarCajasPanel = new javax.swing.JPanel();
+        agregarCajasPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -169,10 +201,282 @@ public class App extends javax.swing.JFrame {
         background.setMinimumSize(new java.awt.Dimension(1000, 600));
         background.setPreferredSize(new java.awt.Dimension(1000, 600));
         background.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        background.add(separadorHorizontalHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 1000, -1));
 
         separadorVerticalContainer.setOrientation(javax.swing.SwingConstants.VERTICAL);
         background.add(separadorVerticalContainer, new org.netbeans.lib.awtextra.AbsoluteConstraints(147, 70, -1, 540));
-        background.add(separadorHorizontalHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 1000, -1));
+
+        cajasPanel.setPreferredSize(new java.awt.Dimension(850, 541));
+
+        tablasCajas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tablasCajas);
+
+        modificarCajasBtn.setText("Modificar");
+        modificarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarCajasBtnActionPerformed(evt);
+            }
+        });
+
+        agregarCajasBtn.setText("Agregar");
+        agregarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarCajasBtnActionPerformed(evt);
+            }
+        });
+
+        eliminarCajasBtn.setText("Eliminar");
+        eliminarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarCajasBtnActionPerformed(evt);
+            }
+        });
+
+        seleccionarVistaCajasBtn.setText("Mostrar cajas vacias");
+        seleccionarVistaCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seleccionarVistaCajasBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout cajasPanelLayout = new javax.swing.GroupLayout(cajasPanel);
+        cajasPanel.setLayout(cajasPanelLayout);
+        cajasPanelLayout.setHorizontalGroup(
+            cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cajasPanelLayout.createSequentialGroup()
+                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(seleccionarVistaCajasBtn)
+                    .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(cajasPanelLayout.createSequentialGroup()
+                            .addGap(190, 190, 190)
+                            .addComponent(agregarCajasBtn)
+                            .addGap(112, 112, 112)
+                            .addComponent(modificarCajasBtn)
+                            .addGap(112, 112, 112)
+                            .addComponent(eliminarCajasBtn))
+                        .addGroup(cajasPanelLayout.createSequentialGroup()
+                            .addGap(33, 33, 33)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        cajasPanelLayout.setVerticalGroup(
+            cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cajasPanelLayout.createSequentialGroup()
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addComponent(seleccionarVistaCajasBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(agregarCajasBtn)
+                    .addComponent(modificarCajasBtn)
+                    .addComponent(eliminarCajasBtn))
+                .addGap(18, 18, 18))
+        );
+
+        tablaPersonas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tablaPersonas);
+
+        seleccionarVistaPersonasBtn.setText("Ver por cantidad");
+        seleccionarVistaPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seleccionarVistaPersonasBtnActionPerformed(evt);
+            }
+        });
+
+        modificarPersonasBtn.setText("Modificar");
+        modificarPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarPersonasBtnActionPerformed(evt);
+            }
+        });
+
+        agregarPersonasBtn.setText("Agregar");
+        agregarPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarPersonasBtnActionPerformed(evt);
+            }
+        });
+
+        eliminarPersonasBtn.setText("Eliminar");
+        eliminarPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarPersonasBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout agregarPersonasPanelLayout = new javax.swing.GroupLayout(agregarPersonasPanel);
+        agregarPersonasPanel.setLayout(agregarPersonasPanelLayout);
+        agregarPersonasPanelLayout.setHorizontalGroup(
+            agregarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        agregarPersonasPanelLayout.setVerticalGroup(
+            agregarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout modificarPersonasPanelLayout = new javax.swing.GroupLayout(modificarPersonasPanel);
+        modificarPersonasPanel.setLayout(modificarPersonasPanelLayout);
+        modificarPersonasPanelLayout.setHorizontalGroup(
+            modificarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        modificarPersonasPanelLayout.setVerticalGroup(
+            modificarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout eliminarPersonasPanelLayout = new javax.swing.GroupLayout(eliminarPersonasPanel);
+        eliminarPersonasPanel.setLayout(eliminarPersonasPanelLayout);
+        eliminarPersonasPanelLayout.setHorizontalGroup(
+            eliminarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        eliminarPersonasPanelLayout.setVerticalGroup(
+            eliminarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout arqueologosPanelLayout = new javax.swing.GroupLayout(arqueologosPanel);
+        arqueologosPanel.setLayout(arqueologosPanelLayout);
+        arqueologosPanelLayout.setHorizontalGroup(
+            arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(arqueologosPanelLayout.createSequentialGroup()
+                .addGap(190, 190, 190)
+                .addComponent(agregarPersonasBtn)
+                .addGap(112, 112, 112)
+                .addComponent(modificarPersonasBtn)
+                .addGap(112, 112, 112)
+                .addComponent(eliminarPersonasBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(arqueologosPanelLayout.createSequentialGroup()
+                .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(arqueologosPanelLayout.createSequentialGroup()
+                        .addContainerGap(699, Short.MAX_VALUE)
+                        .addComponent(seleccionarVistaPersonasBtn))
+                    .addGroup(arqueologosPanelLayout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(28, Short.MAX_VALUE))
+            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(modificarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(eliminarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        arqueologosPanelLayout.setVerticalGroup(
+            arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(arqueologosPanelLayout.createSequentialGroup()
+                .addContainerGap(26, Short.MAX_VALUE)
+                .addComponent(seleccionarVistaPersonasBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(eliminarPersonasBtn)
+                    .addComponent(agregarPersonasBtn)
+                    .addComponent(modificarPersonasBtn))
+                .addContainerGap())
+            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(modificarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(eliminarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel11.setText("Cantidad de arqueologos");
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel10.setText("Cantidad de cuadrículas");
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel12.setText("Cantidad de objetos");
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel13.setText("Cantidad de cajas");
+
+        cantidadArqueologos.setEditable(false);
+
+        cantidadCuadriculas.setEditable(false);
+
+        cantidadObjetos.setEditable(false);
+
+        cantidadCajas.setEditable(false);
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel14.setText("Resumen de la información en el sistema");
+
+        javax.swing.GroupLayout resumePanelLayout = new javax.swing.GroupLayout(resumePanel);
+        resumePanel.setLayout(resumePanelLayout);
+        resumePanelLayout.setHorizontalGroup(
+            resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resumePanelLayout.createSequentialGroup()
+                .addGap(253, 253, 253)
+                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(38, 38, 38)
+                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cantidadObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cantidadCuadriculas, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cantidadArqueologos, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cantidadCajas, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, resumePanelLayout.createSequentialGroup()
+                .addContainerGap(187, Short.MAX_VALUE)
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(184, 184, 184))
+        );
+        resumePanelLayout.setVerticalGroup(
+            resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resumePanelLayout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(jLabel14)
+                .addGap(93, 93, 93)
+                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(cantidadArqueologos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37)
+                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(cantidadCuadriculas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(cantidadObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
+                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(cantidadCajas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(162, Short.MAX_VALUE))
+        );
 
         tablaObjetos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -195,8 +499,18 @@ public class App extends javax.swing.JFrame {
         });
 
         modificarObjetoBtn.setText("Modificar");
+        modificarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarObjetoBtnActionPerformed(evt);
+            }
+        });
 
         eliminarObjetoBtn.setText("Eliminar");
+        eliminarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarObjetoBtnActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Buscar por código de objeto");
@@ -246,6 +560,39 @@ public class App extends javax.swing.JFrame {
         pesoPromedioObjetos.setEditable(false);
 
         pesoMinimoObjetos.setEditable(false);
+
+        javax.swing.GroupLayout agregarObjetosPanelLayout = new javax.swing.GroupLayout(agregarObjetosPanel);
+        agregarObjetosPanel.setLayout(agregarObjetosPanelLayout);
+        agregarObjetosPanelLayout.setHorizontalGroup(
+            agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 820, Short.MAX_VALUE)
+        );
+        agregarObjetosPanelLayout.setVerticalGroup(
+            agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout modificarObjetosPanelLayout = new javax.swing.GroupLayout(modificarObjetosPanel);
+        modificarObjetosPanel.setLayout(modificarObjetosPanelLayout);
+        modificarObjetosPanelLayout.setHorizontalGroup(
+            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 820, Short.MAX_VALUE)
+        );
+        modificarObjetosPanelLayout.setVerticalGroup(
+            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout eliminarObjetosPanelLayout = new javax.swing.GroupLayout(eliminarObjetosPanel);
+        eliminarObjetosPanel.setLayout(eliminarObjetosPanelLayout);
+        eliminarObjetosPanelLayout.setHorizontalGroup(
+            eliminarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 814, Short.MAX_VALUE)
+        );
+        eliminarObjetosPanelLayout.setVerticalGroup(
+            eliminarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout objetosPanelLayout = new javax.swing.GroupLayout(objetosPanel);
         objetosPanel.setLayout(objetosPanelLayout);
@@ -321,6 +668,14 @@ public class App extends javax.swing.JFrame {
                 .addGap(93, 93, 93)
                 .addComponent(eliminarObjetoBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(objetosPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(eliminarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         objetosPanelLayout.setVerticalGroup(
             objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,63 +736,39 @@ public class App extends javax.swing.JFrame {
                     .addComponent(modificarObjetoBtn)
                     .addComponent(eliminarObjetoBtn))
                 .addContainerGap())
-        );
-
-        jLabel10.setText("Info general ");
-
-        javax.swing.GroupLayout infoGeneralPanelLayout = new javax.swing.GroupLayout(infoGeneralPanel);
-        infoGeneralPanel.setLayout(infoGeneralPanelLayout);
-        infoGeneralPanelLayout.setHorizontalGroup(
-            infoGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(infoGeneralPanelLayout.createSequentialGroup()
-                .addGap(256, 256, 256)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(327, Short.MAX_VALUE))
-        );
-        infoGeneralPanelLayout.setVerticalGroup(
-            infoGeneralPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(infoGeneralPanelLayout.createSequentialGroup()
-                .addGap(220, 220, 220)
-                .addComponent(jLabel10)
-                .addContainerGap(305, Short.MAX_VALUE))
-        );
-
-        jLabel11.setText("arqueologos");
-
-        javax.swing.GroupLayout arqueologosPanelLayout = new javax.swing.GroupLayout(arqueologosPanel);
-        arqueologosPanel.setLayout(arqueologosPanelLayout);
-        arqueologosPanelLayout.setHorizontalGroup(
-            arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(arqueologosPanelLayout.createSequentialGroup()
-                .addGap(343, 343, 343)
-                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(361, Short.MAX_VALUE))
-        );
-        arqueologosPanelLayout.setVerticalGroup(
-            arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(arqueologosPanelLayout.createSequentialGroup()
-                .addGap(196, 196, 196)
-                .addComponent(jLabel11)
-                .addContainerGap(329, Short.MAX_VALUE))
+            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(eliminarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
         contenedor.setLayout(contenedorLayout);
         contenedorLayout.setHorizontalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(arqueologosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 850, Short.MAX_VALUE)
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(objetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(infoGeneralPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(resumePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(arqueologosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(cajasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contenedorLayout.setVerticalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(arqueologosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 541, Short.MAX_VALUE)
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(objetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(infoGeneralPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(resumePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(arqueologosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(cajasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         background.add(contenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, 850, 540));
@@ -468,10 +799,10 @@ public class App extends javax.swing.JFrame {
 
         background.add(header, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -4, 1000, 70));
 
-        infoGeneralBtn.setText("Info. General");
-        infoGeneralBtn.addActionListener(new java.awt.event.ActionListener() {
+        resumenBtn.setText("Resumen");
+        resumenBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                infoGeneralBtnActionPerformed(evt);
+                resumenBtnActionPerformed(evt);
             }
         });
 
@@ -489,31 +820,80 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        cajasBtn.setText("Cajas");
+        cajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cajasBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout menuLayout = new javax.swing.GroupLayout(menu);
         menu.setLayout(menuLayout);
         menuLayout.setHorizontalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoGeneralBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(objetosBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(arqueologosBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(cajasBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(resumenBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(objetosBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(arqueologosBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         menuLayout.setVerticalGroup(
             menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(infoGeneralBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
+                .addGap(19, 19, 19)
                 .addComponent(objetosBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(57, 57, 57)
+                .addGap(65, 65, 65)
                 .addComponent(arqueologosBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addGap(65, 65, 65)
+                .addComponent(cajasBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addComponent(resumenBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42))
         );
 
         background.add(menu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 150, 530));
+
+        javax.swing.GroupLayout eliminarCajasPanelLayout = new javax.swing.GroupLayout(eliminarCajasPanel);
+        eliminarCajasPanel.setLayout(eliminarCajasPanelLayout);
+        eliminarCajasPanelLayout.setHorizontalGroup(
+            eliminarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        eliminarCajasPanelLayout.setVerticalGroup(
+            eliminarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        background.add(eliminarCajasPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        javax.swing.GroupLayout modificarCajasPanelLayout = new javax.swing.GroupLayout(modificarCajasPanel);
+        modificarCajasPanel.setLayout(modificarCajasPanelLayout);
+        modificarCajasPanelLayout.setHorizontalGroup(
+            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        modificarCajasPanelLayout.setVerticalGroup(
+            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        background.add(modificarCajasPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        javax.swing.GroupLayout agregarCajasPanelLayout = new javax.swing.GroupLayout(agregarCajasPanel);
+        agregarCajasPanel.setLayout(agregarCajasPanelLayout);
+        agregarCajasPanelLayout.setHorizontalGroup(
+            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        agregarCajasPanelLayout.setVerticalGroup(
+            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        background.add(agregarCajasPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -529,25 +909,21 @@ public class App extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void infoGeneralBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoGeneralBtnActionPerformed
-        showPanel(infoGeneralPanel);
-    }//GEN-LAST:event_infoGeneralBtnActionPerformed
+    private void resumenBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resumenBtnActionPerformed
+        showPanel(resumePanel);
+    }//GEN-LAST:event_resumenBtnActionPerformed
 
     private void arqueologosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arqueologosBtnActionPerformed
         showPanel(arqueologosPanel);
     }//GEN-LAST:event_arqueologosBtnActionPerformed
 
     private void agregarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarObjetoBtnActionPerformed
-        // TODO add your handling code here:
+        showPanel(agregarObjetosPanel);
     }//GEN-LAST:event_agregarObjetoBtnActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void cantidadLiticosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantidadLiticosActionPerformed
         // TODO add your handling code here:
@@ -560,6 +936,59 @@ public class App extends javax.swing.JFrame {
     private void objetosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objetosBtnActionPerformed
         showPanel(objetosPanel);
     }//GEN-LAST:event_objetosBtnActionPerformed
+
+    private void seleccionarVistaPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarVistaPersonasBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_seleccionarVistaPersonasBtnActionPerformed
+
+    private void seleccionarVistaCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarVistaCajasBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_seleccionarVistaCajasBtnActionPerformed
+
+    private void agregarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCajasBtnActionPerformed
+        showPanel(agregarCajasPanel);
+    }//GEN-LAST:event_agregarCajasBtnActionPerformed
+
+    private void cajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cajasBtnActionPerformed
+        showPanel(cajasPanel);
+    }//GEN-LAST:event_cajasBtnActionPerformed
+
+    private void agregarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarPersonasBtnActionPerformed
+        showPanel(agregarPersonasPanel);
+    }//GEN-LAST:event_agregarPersonasBtnActionPerformed
+
+    private void modificarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarPersonasBtnActionPerformed
+       showPanel(modificarPersonasPanel);
+    }//GEN-LAST:event_modificarPersonasBtnActionPerformed
+
+    private void eliminarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPersonasBtnActionPerformed
+        showPanel(eliminarPersonasPanel);
+    }//GEN-LAST:event_eliminarPersonasBtnActionPerformed
+
+    private void modificarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarCajasBtnActionPerformed
+        try {
+            tuplaSeleccionada = tablasCajas.getSelectedRow();
+
+            showPanel(modificarCajasPanel);
+
+        } catch (ArrayIndexOutOfBoundsException evt1) {
+            JOptionPane.showMessageDialog(contenedor, "Seleccione un Proyecto", "Atención!", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Throwable evt2) {
+            JOptionPane.showMessageDialog(contenedor, "Error inesperado", "Atención!", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_modificarCajasBtnActionPerformed
+
+    private void eliminarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCajasBtnActionPerformed
+        showPanel(eliminarCajasPanel);
+    }//GEN-LAST:event_eliminarCajasBtnActionPerformed
+
+    private void modificarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarObjetoBtnActionPerformed
+        showPanel(modificarObjetosPanel);
+    }//GEN-LAST:event_modificarObjetoBtnActionPerformed
+
+    private void eliminarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarObjetoBtnActionPerformed
+        showPanel(eliminarObjetosPanel);
+    }//GEN-LAST:event_eliminarObjetoBtnActionPerformed
 
     public void cargaSQL() throws SQLException{
          try{
@@ -626,24 +1055,41 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton agregarCajasBtn;
+    private javax.swing.JPanel agregarCajasPanel;
     private javax.swing.JButton agregarObjetoBtn;
+    private javax.swing.JPanel agregarObjetosPanel;
+    private javax.swing.JButton agregarPersonasBtn;
+    private javax.swing.JPanel agregarPersonasPanel;
     private javax.swing.JButton arqueologosBtn;
     private javax.swing.JPanel arqueologosPanel;
     private javax.swing.JPanel background;
     private javax.swing.JButton buscarCodigoObjeto;
     private javax.swing.JButton buscarFecha;
+    private javax.swing.JButton cajasBtn;
+    private javax.swing.JPanel cajasPanel;
+    private javax.swing.JTextField cantidadArqueologos;
+    private javax.swing.JTextField cantidadCajas;
     private javax.swing.JTextField cantidadCeramicos;
+    private javax.swing.JTextField cantidadCuadriculas;
     private javax.swing.JTextField cantidadLiticos;
+    private javax.swing.JTextField cantidadObjetos;
     private javax.swing.JPanel contenedor;
+    private javax.swing.JButton eliminarCajasBtn;
+    private javax.swing.JPanel eliminarCajasPanel;
     private javax.swing.JButton eliminarObjetoBtn;
+    private javax.swing.JPanel eliminarObjetosPanel;
+    private javax.swing.JButton eliminarPersonasBtn;
+    private javax.swing.JPanel eliminarPersonasPanel;
     private com.toedter.calendar.JDateChooser fechaFinBuscar;
     private com.toedter.calendar.JDateChooser fechaInicioBuscar;
     private javax.swing.JPanel header;
-    private javax.swing.JButton infoGeneralBtn;
-    private javax.swing.JPanel infoGeneralPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -653,21 +1099,33 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JPanel menu;
+    private javax.swing.JButton modificarCajasBtn;
+    private javax.swing.JPanel modificarCajasPanel;
     private javax.swing.JButton modificarObjetoBtn;
+    private javax.swing.JPanel modificarObjetosPanel;
+    private javax.swing.JButton modificarPersonasBtn;
+    private javax.swing.JPanel modificarPersonasPanel;
     private javax.swing.JButton objetosBtn;
     private javax.swing.JPanel objetosPanel;
     private javax.swing.JTextField pesoMaximoObjetos;
     private javax.swing.JTextField pesoMinimoObjetos;
     private javax.swing.JTextField pesoPromedioObjetos;
+    private javax.swing.JPanel resumePanel;
+    private javax.swing.JButton resumenBtn;
+    private javax.swing.JButton seleccionarVistaCajasBtn;
+    private javax.swing.JButton seleccionarVistaPersonasBtn;
     private javax.swing.JSeparator separadorHorizontalHeader;
     private javax.swing.JSeparator separadorObjetos1;
     private javax.swing.JSeparator separadorObjetos2;
     private javax.swing.JSeparator separadorVerticalContainer;
     private javax.swing.JTable tablaObjetos;
+    private javax.swing.JTable tablaPersonas;
+    private javax.swing.JTable tablasCajas;
     private javax.swing.JLabel title;
     private javax.swing.JLabel todayDate;
     // End of variables declaration//GEN-END:variables
