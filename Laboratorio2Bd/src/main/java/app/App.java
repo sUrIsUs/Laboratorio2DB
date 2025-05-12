@@ -38,7 +38,7 @@ public class App extends javax.swing.JFrame {
     HashMap<String, JTable> mapTablas = new HashMap<>();
     
     // Constantes para la base de datos
-    private static final String DB_NAME = "archeologics";
+    private static final String DB_NAME = "arqPrueba";
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
     private static final String DB_USER = "postgres";
     private static final String DB_PWD = "admin";
@@ -193,6 +193,20 @@ public class App extends javax.swing.JFrame {
         return new DefaultTableModel(data, columnNames);
     }
     
+    // Funcion que me permite eliminar una tupla, asumimos que el codigo de cada esquema se encuentra en la primer columna
+    private void eliminarTupla(String nombreTabla) throws SQLException {
+        try{
+            String codigo = (mapTablas.get(nombreTabla).getValueAt(mapTablas.get(nombreTabla).getSelectedRow(), 0)).toString();
+            if(JOptionPane.showConfirmDialog(null, "Está seguro de eliminar la caja con código " + codigo +"?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0){
+                String nombreColumnaCodigo = mapTablas.get(nombreTabla).getColumnName(0);
+                query = conn.createStatement();
+                query.execute("DELETE FROM " + nombreTabla + " WHERE " + nombreColumnaCodigo + " = " + "'" + codigo.toUpperCase() + "'");
+                updateTabla(nombreTabla);
+            }        
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(contenedor, "Esta fila no se puede eliminar ya que esta referenciada en la tabla objetos ", "Atención!", JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -218,7 +232,6 @@ public class App extends javax.swing.JFrame {
         eliminarPersonasBtn = new javax.swing.JButton();
         agregarPersonasPanel = new javax.swing.JPanel();
         modificarPersonasPanel = new javax.swing.JPanel();
-        eliminarPersonasPanel = new javax.swing.JPanel();
         resumePanel = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -259,7 +272,6 @@ public class App extends javax.swing.JFrame {
         separadorObjetos2 = new javax.swing.JSeparator();
         agregarObjetosPanel = new javax.swing.JPanel();
         modificarObjetosPanel = new javax.swing.JPanel();
-        eliminarObjetosPanel = new javax.swing.JPanel();
         header = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
         todayDate = new javax.swing.JLabel();
@@ -268,7 +280,6 @@ public class App extends javax.swing.JFrame {
         objetosBtn = new javax.swing.JButton();
         arqueologosBtn = new javax.swing.JButton();
         cajasBtn = new javax.swing.JButton();
-        eliminarCajasPanel = new javax.swing.JPanel();
         modificarCajasPanel = new javax.swing.JPanel();
         agregarCajasPanel = new javax.swing.JPanel();
 
@@ -425,17 +436,6 @@ public class App extends javax.swing.JFrame {
             .addGap(0, 541, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout eliminarPersonasPanelLayout = new javax.swing.GroupLayout(eliminarPersonasPanel);
-        eliminarPersonasPanel.setLayout(eliminarPersonasPanelLayout);
-        eliminarPersonasPanelLayout.setHorizontalGroup(
-            eliminarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        eliminarPersonasPanelLayout.setVerticalGroup(
-            eliminarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout arqueologosPanelLayout = new javax.swing.GroupLayout(arqueologosPanel);
         arqueologosPanel.setLayout(arqueologosPanelLayout);
         arqueologosPanelLayout.setHorizontalGroup(
@@ -461,8 +461,6 @@ public class App extends javax.swing.JFrame {
                 .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(modificarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(eliminarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         arqueologosPanelLayout.setVerticalGroup(
             arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -481,8 +479,6 @@ public class App extends javax.swing.JFrame {
                 .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(modificarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(eliminarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -662,17 +658,6 @@ public class App extends javax.swing.JFrame {
             .addGap(0, 541, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout eliminarObjetosPanelLayout = new javax.swing.GroupLayout(eliminarObjetosPanel);
-        eliminarObjetosPanel.setLayout(eliminarObjetosPanelLayout);
-        eliminarObjetosPanelLayout.setHorizontalGroup(
-            eliminarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 814, Short.MAX_VALUE)
-        );
-        eliminarObjetosPanelLayout.setVerticalGroup(
-            eliminarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout objetosPanelLayout = new javax.swing.GroupLayout(objetosPanel);
         objetosPanel.setLayout(objetosPanelLayout);
         objetosPanelLayout.setHorizontalGroup(
@@ -751,10 +736,6 @@ public class App extends javax.swing.JFrame {
                 .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(objetosPanelLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(eliminarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         objetosPanelLayout.setVerticalGroup(
             objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -819,8 +800,6 @@ public class App extends javax.swing.JFrame {
                 .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(objetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(eliminarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
@@ -935,19 +914,6 @@ public class App extends javax.swing.JFrame {
 
         background.add(menu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 150, 530));
 
-        javax.swing.GroupLayout eliminarCajasPanelLayout = new javax.swing.GroupLayout(eliminarCajasPanel);
-        eliminarCajasPanel.setLayout(eliminarCajasPanelLayout);
-        eliminarCajasPanelLayout.setHorizontalGroup(
-            eliminarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        eliminarCajasPanelLayout.setVerticalGroup(
-            eliminarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        background.add(eliminarCajasPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
         javax.swing.GroupLayout modificarCajasPanelLayout = new javax.swing.GroupLayout(modificarCajasPanel);
         modificarCajasPanel.setLayout(modificarCajasPanelLayout);
         modificarCajasPanelLayout.setHorizontalGroup(
@@ -1022,7 +988,20 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_seleccionarVistaPersonasBtnActionPerformed
 
     private void seleccionarVistaCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarVistaCajasBtnActionPerformed
-        // TODO add your handling code here:
+        try {
+                query = conn.createStatement();
+            if(seleccionarVistaCajasBtn.getText().equals("Mostrar cajas vacias")){
+                seleccionarVistaCajasBtn.setText("Mostrar todas las cajas");
+                result = query.executeQuery("SELECT ca_cod, ca_lugar FROM Cajas WHERE ca_cod NOT IN (SELECT ca_cod_Contiene FROM Objetos)");
+                tablaCajas.setModel(resultToTable(result));
+            }
+            else{
+                seleccionarVistaCajasBtn.setText("Mostrar cajas vacias");
+                updateTabla("Cajas");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_seleccionarVistaCajasBtnActionPerformed
 
     private void agregarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCajasBtnActionPerformed
@@ -1042,7 +1021,11 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_modificarPersonasBtnActionPerformed
 
     private void eliminarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPersonasBtnActionPerformed
-        showPanel(eliminarPersonasPanel);
+         try {
+            eliminarTupla("Personas");
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_eliminarPersonasBtnActionPerformed
 
     private void modificarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarCajasBtnActionPerformed
@@ -1059,7 +1042,11 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_modificarCajasBtnActionPerformed
 
     private void eliminarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCajasBtnActionPerformed
-        showPanel(eliminarCajasPanel);
+        try {
+            eliminarTupla("Cajas");
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_eliminarCajasBtnActionPerformed
 
     private void modificarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarObjetoBtnActionPerformed
@@ -1067,7 +1054,11 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_modificarObjetoBtnActionPerformed
 
     private void eliminarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarObjetoBtnActionPerformed
-        showPanel(eliminarObjetosPanel);
+        try {
+            eliminarTupla("Objetos");
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_eliminarObjetoBtnActionPerformed
 
     
@@ -1129,11 +1120,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField cantidadObjetos;
     private javax.swing.JPanel contenedor;
     private javax.swing.JButton eliminarCajasBtn;
-    private javax.swing.JPanel eliminarCajasPanel;
     private javax.swing.JButton eliminarObjetoBtn;
-    private javax.swing.JPanel eliminarObjetosPanel;
     private javax.swing.JButton eliminarPersonasBtn;
-    private javax.swing.JPanel eliminarPersonasPanel;
     private com.toedter.calendar.JDateChooser fechaFinBuscar;
     private com.toedter.calendar.JDateChooser fechaInicioBuscar;
     private javax.swing.JPanel header;
