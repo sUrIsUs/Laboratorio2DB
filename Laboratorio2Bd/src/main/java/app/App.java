@@ -14,13 +14,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -30,15 +35,18 @@ public class App extends javax.swing.JFrame {
     LocalDate now = LocalDate.now();
     int day = now.getDayOfMonth(), month = now.getMonthValue(), year = now.getYear();
     String [] months = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-
+    HashMap<String, JTable> mapTablas = new HashMap<>();
+    
     // Constantes para la base de datos
     private static final String DB_NAME = "archeologics";
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
     private static final String DB_USER = "postgres";
     private static final String DB_PWD = "admin";
     
+    // Objetos utilizados para interactuar con la base de datos
     private static Statement query = null;
     private static Connection conn = null;
+    private static ResultSet result = null;
     
     public App() throws SQLException {
         
@@ -47,6 +55,11 @@ public class App extends javax.swing.JFrame {
         
         // Muestro fecha
         todayDate.setText("Hoy es " + day + " de " + months[month - 1] + " de " + year);
+        
+        // Instancio el mapeo de las tablas
+        mapTablas.put("Objetos", tablaObjetos);
+        mapTablas.put("Personas", tablaPersonas);
+        mapTablas.put("Cajas", tablaCajas);
         
         // Creo tablas
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
@@ -106,15 +119,80 @@ public class App extends javax.swing.JFrame {
         
         // Cargo la base de datos si no fue cargada previamente
 //        cargaSQL();
+
+        // Muestro la tabla con la que empieza el programa
+        updateTabla("Objetos");
+        updateTabla("Personas");
+        updateTabla("Cajas");
     }
     
-     public void showPanel(JPanel p){
-        p.setLocation(0,0);
-        contenedor.removeAll();
-        contenedor.add(p);
-        contenedor.revalidate();
-        contenedor.repaint();
+    // Función auxiliar para cambiar de panel
+    public void showPanel(JPanel p){
+       p.setLocation(0,0);
+       contenedor.removeAll();
+       contenedor.add(p);
+       contenedor.revalidate();
+       contenedor.repaint();
     }
+
+    // Función que reliza la inicialización de las tablas en la BD
+    public void cargaSQL() throws SQLException {
+        try {
+            File archivo = new File("Inserta_Datos2.sql");
+            FileReader rArchivo = new FileReader(archivo);
+            BufferedReader bArchivo = new BufferedReader(rArchivo);
+            String line;
+            Statement stmt = conn.createStatement();
+            StringBuilder sql = new StringBuilder();
+            while ((line = bArchivo.readLine()) != null) {
+                if (!line.trim().isEmpty() && !line.startsWith("--")) {
+                    sql.append(line);
+                }
+                // Ejecutar la sentencia si encontramos un ';'
+                if (line.trim().endsWith(";")) {
+                    stmt.execute(sql.toString());
+                    sql = new StringBuilder(); // Reiniciar para la siguiente sentencia
+                }
+            }
+            bArchivo.close();
+        } catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(background, "Hubo un error en la carga de datos", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(background, "Hubo un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    // Función que realiza la consulta SELECT * 
+    private void updateTabla(String nombreTabla) throws SQLException {
+        query = conn.createStatement();
+        result = query.executeQuery("SELECT * FROM " + nombreTabla);
+        mapTablas.get(nombreTabla).setModel(resultToTable(result));
+    }
+    
+    // Función auxiliar para convertir las consultas en tablas
+    private static DefaultTableModel resultToTable(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        
+        // Creamos las columnas
+        Vector<String> columnNames = new Vector<>();
+        int columnCount = metaData.getColumnCount();
+        for (int column = 1; column <= columnCount; column++) {
+            columnNames.add(metaData.getColumnName(column));
+        }
+        
+        // Creamos las filas
+        Vector<Vector<Object>> data = new Vector<>();
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
+                vector.add(rs.getObject(columnIndex));
+            }
+            data.add(vector);
+        }
+        
+        return new DefaultTableModel(data, columnNames);
+    }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -126,7 +204,7 @@ public class App extends javax.swing.JFrame {
         contenedor = new javax.swing.JPanel();
         cajasPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tablasCajas = new javax.swing.JTable();
+        tablaCajas = new javax.swing.JTable();
         modificarCajasBtn = new javax.swing.JButton();
         agregarCajasBtn = new javax.swing.JButton();
         eliminarCajasBtn = new javax.swing.JButton();
@@ -208,7 +286,7 @@ public class App extends javax.swing.JFrame {
 
         cajasPanel.setPreferredSize(new java.awt.Dimension(850, 541));
 
-        tablasCajas.setModel(new javax.swing.table.DefaultTableModel(
+        tablaCajas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -219,7 +297,7 @@ public class App extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(tablasCajas);
+        jScrollPane3.setViewportView(tablaCajas);
 
         modificarCajasBtn.setText("Modificar");
         modificarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -489,6 +567,7 @@ public class App extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tablaObjetos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tablaObjetos);
 
         agregarObjetoBtn.setText("Agregar");
@@ -909,6 +988,7 @@ public class App extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void resumenBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resumenBtnActionPerformed
         showPanel(resumePanel);
     }//GEN-LAST:event_resumenBtnActionPerformed
@@ -967,7 +1047,7 @@ public class App extends javax.swing.JFrame {
 
     private void modificarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarCajasBtnActionPerformed
         try {
-            tuplaSeleccionada = tablasCajas.getSelectedRow();
+            tuplaSeleccionada = tablaCajas.getSelectedRow();
 
             showPanel(modificarCajasPanel);
 
@@ -990,33 +1070,6 @@ public class App extends javax.swing.JFrame {
         showPanel(eliminarObjetosPanel);
     }//GEN-LAST:event_eliminarObjetoBtnActionPerformed
 
-    public void cargaSQL() throws SQLException{
-         try{
-            File archivo = new File ("Inserta_Datos2.sql");
-            FileReader rArchivo = new FileReader(archivo);
-            BufferedReader bArchivo = new BufferedReader(rArchivo);
-            String line;
-            Statement stmt = conn.createStatement();
-            StringBuilder sql = new StringBuilder();
-            while((line = bArchivo.readLine()) != null){
-                if (!line.trim().isEmpty() && !line.startsWith("--")) {
-                    sql.append(line);
-                }
-                // Ejecutar la sentencia si encontramos un ';'
-                if (line.trim().endsWith(";")) {
-                    stmt.execute(sql.toString());
-                    sql = new StringBuilder(); // Reiniciar para la siguiente sentencia
-                }
-            }
-            bArchivo.close();
-         }
-         catch(FileNotFoundException ex){
-            JOptionPane.showMessageDialog(background, "Hubo un error en la carga de datos","Error",JOptionPane.ERROR_MESSAGE);
-         }
-         catch(IOException ex){
-            JOptionPane.showMessageDialog(background, "Hubo un error inesperado","Error",JOptionPane.ERROR_MESSAGE);
-        }
-    }
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -1123,9 +1176,9 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSeparator separadorObjetos1;
     private javax.swing.JSeparator separadorObjetos2;
     private javax.swing.JSeparator separadorVerticalContainer;
+    private javax.swing.JTable tablaCajas;
     private javax.swing.JTable tablaObjetos;
     private javax.swing.JTable tablaPersonas;
-    private javax.swing.JTable tablasCajas;
     private javax.swing.JLabel title;
     private javax.swing.JLabel todayDate;
     // End of variables declaration//GEN-END:variables
