@@ -60,7 +60,6 @@ public class App extends javax.swing.JFrame {
         // Muestro fecha
         todayDate.setText("Hoy es " + day + " de " + months[month - 1] + " de " + year);
         
-        
         // Instancio el mapeo de las tablas
         mapTablas.put("Objetos", tablaObjetos);
         mapTablas.put("Personas", tablaPersonas);
@@ -69,14 +68,13 @@ public class App extends javax.swing.JFrame {
         // Hago coneccion con la DB
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
         
-
-        
         // Cargo la base de datos si no fue cargada previamente
         query = conn.createStatement();
             cargaSQL();
 
         // Instancio las tablas
         actualizarInformacionObjetos();
+        
         updateTabla("Objetos");
         updateTabla("Personas");
         updateTabla("Cajas");
@@ -232,16 +230,14 @@ try {
     
     private void actualizarInformacionObjetos() {
         try {
-        query = conn.createStatement();
-        ResultSet rs;
+            query = conn.createStatement();
+            ResultSet rs;
             rs = query.executeQuery("SELECT COUNT(O_cod) AS count FROM Liticos");
             rs.next();
             cantidadLiticos.setText(String.valueOf(rs.getInt("count")));
-            rs.close();
             rs = query.executeQuery("SELECT COUNT(O_cod) AS count FROM Ceramicos");
             rs.next();
             cantidadCeramicos.setText(String.valueOf(rs.getInt("count")));
-            rs.close();
             rs= query.executeQuery("SELECT MAX(o_peso) AS MAX, AVG(o_peso) AS AVG, MIN(o_peso) AS MIN FROM Objetos");
             rs.next();
             pesoMaximoObjetos.setText(String.valueOf( rs.getDouble("MAX")));
@@ -255,7 +251,19 @@ try {
     private void actualizarInformacionResumen(){
         try{
             query = conn.createStatement();
-            
+            ResultSet rs;
+            rs = query.executeQuery("SELECT COUNT(P_DNI) AS count FROM Personas");
+            rs.next();
+            cantidadArqueologos.setText(String.valueOf(rs.getInt("count")));
+            rs = query.executeQuery("SELECT COUNT(cu_cod) AS count FROM Cuadriculas");
+            rs.next();
+            cantidadCuadriculas.setText(String.valueOf(rs.getInt("count")));
+            rs = query.executeQuery("SELECT COUNT(o_cod) AS count FROM Objetos");
+            rs.next();
+            cantidadObjetos.setText(String.valueOf(rs.getInt("count")));
+            rs = query.executeQuery("SELECT COUNT(ca_cod) AS count FROM Cajas");
+            rs.next();
+            cantidadCajas.setText(String.valueOf(rs.getInt("count")));
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -265,10 +273,48 @@ try {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jComboBox1 = new javax.swing.JComboBox<>();
         background = new javax.swing.JPanel();
         separadorHorizontalHeader = new javax.swing.JSeparator();
         separadorVerticalContainer = new javax.swing.JSeparator();
         contenedor = new javax.swing.JPanel();
+        modificarCajasPanel = new javax.swing.JPanel();
+        agregarCajasPanel = new javax.swing.JPanel();
+        modificarObjetosPanel = new javax.swing.JPanel();
+        agregarObjetosPanel = new javax.swing.JPanel();
+        codigoObjTxt = new javax.swing.JTextField();
+        nombreObjTF = new javax.swing.JTextField();
+        tipoExtraccionObjTF = new javax.swing.JTextField();
+        altoObjTF = new javax.swing.JTextField();
+        largoObjTF = new javax.swing.JTextField();
+        espesorObjTF = new javax.swing.JTextField();
+        pesoObjTF = new javax.swing.JTextField();
+        cantidadObjTF = new javax.swing.JTextField();
+        descripcionObjTF = new javax.swing.JTextField();
+        origenObjTF = new javax.swing.JTextField();
+        codigpCuadriculaoObjTF = new javax.swing.JTextField();
+        codigoCajaObjTF = new javax.swing.JTextField();
+        dniObjTF = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        tipoObjCB = new javax.swing.JComboBox<>();
+        jLabel29 = new javax.swing.JLabel();
+        jLabel30 = new javax.swing.JLabel();
+        fechaRegistroObjTF = new com.toedter.calendar.JDateChooser();
+        ingresarObjetoBtn = new javax.swing.JButton();
+        cancelarObjetoBtn = new javax.swing.JButton();
         cajasPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tablaCajas = new javax.swing.JTable();
@@ -285,7 +331,7 @@ try {
         eliminarPersonasBtn = new javax.swing.JButton();
         agregarPersonasPanel = new javax.swing.JPanel();
         modificarPersonasPanel = new javax.swing.JPanel();
-        resumePanel = new javax.swing.JPanel();
+        resumenPanel = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -332,10 +378,8 @@ try {
         objetosBtn = new javax.swing.JButton();
         arqueologosBtn = new javax.swing.JButton();
         cajasBtn = new javax.swing.JButton();
-        modificarCajasPanel = new javax.swing.JPanel();
-        agregarCajasPanel = new javax.swing.JPanel();
-        modificarObjetosPanel = new javax.swing.JPanel();
-        agregarObjetosPanel = new javax.swing.JPanel();
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -348,6 +392,159 @@ try {
 
         separadorVerticalContainer.setOrientation(javax.swing.SwingConstants.VERTICAL);
         background.add(separadorVerticalContainer, new org.netbeans.lib.awtextra.AbsoluteConstraints(147, 70, -1, 540));
+
+        javax.swing.GroupLayout modificarCajasPanelLayout = new javax.swing.GroupLayout(modificarCajasPanel);
+        modificarCajasPanel.setLayout(modificarCajasPanelLayout);
+        modificarCajasPanelLayout.setHorizontalGroup(
+            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        modificarCajasPanelLayout.setVerticalGroup(
+            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout agregarCajasPanelLayout = new javax.swing.GroupLayout(agregarCajasPanel);
+        agregarCajasPanel.setLayout(agregarCajasPanelLayout);
+        agregarCajasPanelLayout.setHorizontalGroup(
+            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 850, Short.MAX_VALUE)
+        );
+        agregarCajasPanelLayout.setVerticalGroup(
+            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout modificarObjetosPanelLayout = new javax.swing.GroupLayout(modificarObjetosPanel);
+        modificarObjetosPanel.setLayout(modificarObjetosPanelLayout);
+        modificarObjetosPanelLayout.setHorizontalGroup(
+            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 820, Short.MAX_VALUE)
+        );
+        modificarObjetosPanelLayout.setVerticalGroup(
+            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
+        agregarObjetosPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        codigoObjTxt.setText("jTextField1");
+        agregarObjetosPanel.add(codigoObjTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 130, 75, -1));
+
+        nombreObjTF.setText("jTextField2");
+        agregarObjetosPanel.add(nombreObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 170, 75, -1));
+
+        tipoExtraccionObjTF.setText("jTextField3");
+        agregarObjetosPanel.add(tipoExtraccionObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 220, 75, -1));
+
+        altoObjTF.setText("jTextField4");
+        altoObjTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                altoObjTFActionPerformed(evt);
+            }
+        });
+        agregarObjetosPanel.add(altoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 270, 75, -1));
+
+        largoObjTF.setText("jTextField5");
+        agregarObjetosPanel.add(largoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 320, 75, -1));
+
+        espesorObjTF.setText("jTextField6");
+        espesorObjTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                espesorObjTFActionPerformed(evt);
+            }
+        });
+        agregarObjetosPanel.add(espesorObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 360, 75, -1));
+
+        pesoObjTF.setText("jTextField7");
+        agregarObjetosPanel.add(pesoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 400, 75, -1));
+
+        cantidadObjTF.setText("jTextField8");
+        agregarObjetosPanel.add(cantidadObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, 75, -1));
+
+        descripcionObjTF.setText("jTextField10");
+        agregarObjetosPanel.add(descripcionObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 180, 81, -1));
+
+        origenObjTF.setText("jTextField11");
+        agregarObjetosPanel.add(origenObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 230, 81, -1));
+
+        codigpCuadriculaoObjTF.setText("jTextField12");
+        agregarObjetosPanel.add(codigpCuadriculaoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 270, 81, -1));
+
+        codigoCajaObjTF.setText("jTextField13");
+        agregarObjetosPanel.add(codigoCajaObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 320, 81, -1));
+
+        dniObjTF.setText("jTextField14");
+        agregarObjetosPanel.add(dniObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 360, 81, -1));
+
+        jLabel15.setText("Código");
+        agregarObjetosPanel.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 140, 43, -1));
+
+        jLabel16.setText("Nombre");
+        agregarObjetosPanel.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 180, 55, -1));
+
+        jLabel17.setText("Tipo extracción");
+        agregarObjetosPanel.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, -1, -1));
+
+        jLabel18.setText("Alto");
+        agregarObjetosPanel.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 280, 43, -1));
+
+        jLabel19.setText("Largo");
+        agregarObjetosPanel.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 320, 43, -1));
+
+        jLabel20.setText("Espesor");
+        agregarObjetosPanel.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 370, 43, -1));
+
+        jLabel21.setText("Peso");
+        agregarObjetosPanel.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 410, 43, -1));
+
+        jLabel22.setText("Cantidad");
+        agregarObjetosPanel.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 450, 70, -1));
+
+        jLabel23.setText("Fecha registro");
+        agregarObjetosPanel.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 150, 85, -1));
+
+        jLabel24.setText("Descripción");
+        agregarObjetosPanel.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 190, 73, -1));
+
+        jLabel25.setText("Origen");
+        agregarObjetosPanel.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 230, 43, -1));
+
+        jLabel26.setText("Código cuadricula");
+        agregarObjetosPanel.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 280, 104, -1));
+
+        jLabel27.setText("Código caja");
+        agregarObjetosPanel.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 320, 71, -1));
+
+        jLabel28.setText("DNI Arqueologo");
+        agregarObjetosPanel.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 370, -1, -1));
+
+        tipoObjCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cerámico", "Litico" }));
+        tipoObjCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipoObjCBActionPerformed(evt);
+            }
+        });
+        agregarObjetosPanel.add(tipoObjCB, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 400, -1, -1));
+
+        jLabel29.setText("Tipo");
+        agregarObjetosPanel.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 410, 43, -1));
+
+        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel30.setText("Ingrese la información del objeto");
+        agregarObjetosPanel.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(294, 33, 306, -1));
+        agregarObjetosPanel.add(fechaRegistroObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, -1, -1));
+
+        ingresarObjetoBtn.setText("Ingresar");
+        ingresarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ingresarObjetoBtnActionPerformed(evt);
+            }
+        });
+        agregarObjetosPanel.add(ingresarObjetoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 500, -1, -1));
+
+        cancelarObjetoBtn.setText("Cancelar");
+        agregarObjetosPanel.add(cancelarObjetoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 500, -1, -1));
 
         cajasPanel.setPreferredSize(new java.awt.Dimension(850, 541));
 
@@ -410,7 +607,7 @@ try {
                         .addGroup(cajasPanelLayout.createSequentialGroup()
                             .addGap(33, 33, 33)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         cajasPanelLayout.setVerticalGroup(
             cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -505,12 +702,12 @@ try {
             .addGroup(arqueologosPanelLayout.createSequentialGroup()
                 .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(arqueologosPanelLayout.createSequentialGroup()
-                        .addContainerGap(699, Short.MAX_VALUE)
+                        .addContainerGap(705, Short.MAX_VALUE)
                         .addComponent(seleccionarVistaPersonasBtn))
                     .addGroup(arqueologosPanelLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
             .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -558,49 +755,49 @@ try {
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel14.setText("Resumen de la información en el sistema");
 
-        javax.swing.GroupLayout resumePanelLayout = new javax.swing.GroupLayout(resumePanel);
-        resumePanel.setLayout(resumePanelLayout);
-        resumePanelLayout.setHorizontalGroup(
-            resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(resumePanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout resumenPanelLayout = new javax.swing.GroupLayout(resumenPanel);
+        resumenPanel.setLayout(resumenPanelLayout);
+        resumenPanelLayout.setHorizontalGroup(
+            resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resumenPanelLayout.createSequentialGroup()
                 .addGap(253, 253, 253)
-                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(38, 38, 38)
-                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cantidadObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cantidadCuadriculas, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cantidadArqueologos, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cantidadCajas, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, resumePanelLayout.createSequentialGroup()
-                .addContainerGap(187, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, resumenPanelLayout.createSequentialGroup()
+                .addContainerGap(199, Short.MAX_VALUE)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(184, 184, 184))
         );
-        resumePanelLayout.setVerticalGroup(
-            resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(resumePanelLayout.createSequentialGroup()
+        resumenPanelLayout.setVerticalGroup(
+            resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resumenPanelLayout.createSequentialGroup()
                 .addGap(39, 39, 39)
                 .addComponent(jLabel14)
                 .addGap(93, 93, 93)
-                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(cantidadArqueologos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
-                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(cantidadCuadriculas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35)
-                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(cantidadObjetos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
-                .addGroup(resumePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(cantidadCajas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(191, Short.MAX_VALUE))
@@ -842,15 +1039,35 @@ try {
         contenedor.setLayout(contenedorLayout);
         contenedorLayout.setHorizontalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
+            .addGap(0, 862, Short.MAX_VALUE)
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(objetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE))
+                .addComponent(objetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(resumePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(resumenPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(arqueologosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(cajasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(cajasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(modificarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(agregarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         contenedorLayout.setVerticalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -858,11 +1075,31 @@ try {
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(objetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(resumePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(resumenPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(arqueologosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(cajasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(modificarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(agregarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         background.add(contenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 850, 570));
@@ -950,58 +1187,6 @@ try {
 
         background.add(menu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 150, 570));
 
-        javax.swing.GroupLayout modificarCajasPanelLayout = new javax.swing.GroupLayout(modificarCajasPanel);
-        modificarCajasPanel.setLayout(modificarCajasPanelLayout);
-        modificarCajasPanelLayout.setHorizontalGroup(
-            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        modificarCajasPanelLayout.setVerticalGroup(
-            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        background.add(modificarCajasPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        javax.swing.GroupLayout agregarCajasPanelLayout = new javax.swing.GroupLayout(agregarCajasPanel);
-        agregarCajasPanel.setLayout(agregarCajasPanelLayout);
-        agregarCajasPanelLayout.setHorizontalGroup(
-            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        agregarCajasPanelLayout.setVerticalGroup(
-            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        background.add(agregarCajasPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        javax.swing.GroupLayout modificarObjetosPanelLayout = new javax.swing.GroupLayout(modificarObjetosPanel);
-        modificarObjetosPanel.setLayout(modificarObjetosPanelLayout);
-        modificarObjetosPanelLayout.setHorizontalGroup(
-            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
-        );
-        modificarObjetosPanelLayout.setVerticalGroup(
-            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        background.add(modificarObjetosPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        javax.swing.GroupLayout agregarObjetosPanelLayout = new javax.swing.GroupLayout(agregarObjetosPanel);
-        agregarObjetosPanel.setLayout(agregarObjetosPanelLayout);
-        agregarObjetosPanelLayout.setHorizontalGroup(
-            agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 862, Short.MAX_VALUE)
-        );
-        agregarObjetosPanelLayout.setVerticalGroup(
-            agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 553, Short.MAX_VALUE)
-        );
-
-        background.add(agregarObjetosPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1018,7 +1203,8 @@ try {
 
 
     private void resumenBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resumenBtnActionPerformed
-        showPanel(resumePanel);
+        actualizarInformacionResumen();
+        showPanel(resumenPanel);
     }//GEN-LAST:event_resumenBtnActionPerformed
 
     private void arqueologosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_arqueologosBtnActionPerformed
@@ -1042,6 +1228,7 @@ try {
     }//GEN-LAST:event_pesoMaximoObjetosActionPerformed
 
     private void objetosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objetosBtnActionPerformed
+        actualizarInformacionObjetos();
         showPanel(objetosPanel);
     }//GEN-LAST:event_objetosBtnActionPerformed
 
@@ -1143,6 +1330,22 @@ try {
         }
     }//GEN-LAST:event_buscarFechaActionPerformed
 
+    private void altoObjTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_altoObjTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_altoObjTFActionPerformed
+
+    private void espesorObjTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_espesorObjTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_espesorObjTFActionPerformed
+
+    private void ingresarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarObjetoBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ingresarObjetoBtnActionPerformed
+
+    private void tipoObjCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoObjCBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoObjCBActionPerformed
+
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -1187,6 +1390,7 @@ try {
     private javax.swing.JPanel agregarObjetosPanel;
     private javax.swing.JButton agregarPersonasBtn;
     private javax.swing.JPanel agregarPersonasPanel;
+    private javax.swing.JTextField altoObjTF;
     private javax.swing.JButton arqueologosBtn;
     private javax.swing.JPanel arqueologosPanel;
     private javax.swing.JPanel background;
@@ -1194,28 +1398,55 @@ try {
     private javax.swing.JButton buscarFecha;
     private javax.swing.JButton cajasBtn;
     private javax.swing.JPanel cajasPanel;
+    private javax.swing.JButton cancelarObjetoBtn;
     private javax.swing.JTextField cantidadArqueologos;
     private javax.swing.JTextField cantidadCajas;
     private javax.swing.JTextField cantidadCeramicos;
     private javax.swing.JTextField cantidadCuadriculas;
     private javax.swing.JTextField cantidadLiticos;
+    private javax.swing.JTextField cantidadObjTF;
     private javax.swing.JTextField cantidadObjetos;
+    private javax.swing.JTextField codigoCajaObjTF;
+    private javax.swing.JTextField codigoObjTxt;
     private javax.swing.JTextField codigoObjetoTextField;
+    private javax.swing.JTextField codigpCuadriculaoObjTF;
     private javax.swing.JPanel contenedor;
+    private javax.swing.JTextField descripcionObjTF;
+    private javax.swing.JTextField dniObjTF;
     private javax.swing.JButton eliminarCajasBtn;
     private javax.swing.JButton eliminarObjetoBtn;
     private javax.swing.JButton eliminarPersonasBtn;
+    private javax.swing.JTextField espesorObjTF;
     private com.toedter.calendar.JDateChooser fechaFinBuscar;
     private com.toedter.calendar.JDateChooser fechaInicioBuscar;
+    private com.toedter.calendar.JDateChooser fechaRegistroObjTF;
     private javax.swing.JPanel header;
+    private javax.swing.JButton ingresarObjetoBtn;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1226,6 +1457,7 @@ try {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextField largoObjTF;
     private javax.swing.JPanel menu;
     private javax.swing.JButton modificarCajasBtn;
     private javax.swing.JPanel modificarCajasPanel;
@@ -1234,13 +1466,16 @@ try {
     private javax.swing.JButton modificarPersonasBtn;
     private javax.swing.JPanel modificarPersonasPanel;
     private javax.swing.JButton mostrarTodosBtn;
+    private javax.swing.JTextField nombreObjTF;
     private javax.swing.JButton objetosBtn;
     private javax.swing.JPanel objetosPanel;
+    private javax.swing.JTextField origenObjTF;
     private javax.swing.JTextField pesoMaximoObjetos;
     private javax.swing.JTextField pesoMinimoObjetos;
+    private javax.swing.JTextField pesoObjTF;
     private javax.swing.JTextField pesoPromedioObjetos;
-    private javax.swing.JPanel resumePanel;
     private javax.swing.JButton resumenBtn;
+    private javax.swing.JPanel resumenPanel;
     private javax.swing.JButton seleccionarVistaCajasBtn;
     private javax.swing.JButton seleccionarVistaPersonasBtn;
     private javax.swing.JSeparator separadorHorizontalHeader;
@@ -1250,6 +1485,8 @@ try {
     private javax.swing.JTable tablaCajas;
     private javax.swing.JTable tablaObjetos;
     private javax.swing.JTable tablaPersonas;
+    private javax.swing.JTextField tipoExtraccionObjTF;
+    private javax.swing.JComboBox<String> tipoObjCB;
     private javax.swing.JLabel title;
     private javax.swing.JLabel todayDate;
     // End of variables declaration//GEN-END:variables
