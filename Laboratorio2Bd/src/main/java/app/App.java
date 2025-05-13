@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
@@ -47,6 +48,7 @@ public class App extends javax.swing.JFrame {
     
     // Objetos utilizados para interactuar con la base de datos
     private static Statement query = null;
+    private static PreparedStatement p_query = null;
     private static Connection conn = null;
     private static ResultSet result = null;
     
@@ -74,7 +76,7 @@ public class App extends javax.swing.JFrame {
             cargaSQL();
 
         // Instancio las tablas
-        informacionObjetos();
+        actualizarInformacionObjetos();
         updateTabla("Objetos");
         updateTabla("Personas");
         updateTabla("Cajas");
@@ -207,21 +209,28 @@ try {
     }
     
     // Funcion que me permite eliminar una tupla, asumimos que el codigo de cada esquema se encuentra en la primer columna
-    private void eliminarTupla(String nombreTabla) throws SQLException {
+    private void eliminarTupla(String nombreTabla) {
         try{
             String codigo = (mapTablas.get(nombreTabla).getValueAt(mapTablas.get(nombreTabla).getSelectedRow(), 0)).toString();
-            if(JOptionPane.showConfirmDialog(null, "Está seguro de eliminar la caja con código " + codigo +"?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0){
+            if(JOptionPane.showConfirmDialog(null, "Está seguro de eliminar " + codigo +"?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0){
                 String nombreColumnaCodigo = mapTablas.get(nombreTabla).getColumnName(0);
-                query = conn.createStatement();
-                query.execute("DELETE FROM " + nombreTabla + " WHERE " + nombreColumnaCodigo + " = " + "'" + codigo.toUpperCase() + "'");
+//                query = conn.createStatement();
+//                query.execute("DELETE FROM " + nombreTabla + " WHERE " + nombreColumnaCodigo + " = " + "'" + codigo.toUpperCase() + "'");
+//                updateTabla(nombreTabla);
+                String sql = "DELETE FROM " + nombreTabla + " WHERE " + nombreColumnaCodigo + " = ?";
+                p_query = conn.prepareStatement(sql);
+                p_query.setString(1, codigo.toUpperCase());
+                p_query.executeQuery();
                 updateTabla(nombreTabla);
+                
             }        
         }catch(SQLException e){
-            JOptionPane.showMessageDialog(contenedor, "Esta fila no se puede eliminar ya que esta referenciada en la tabla objetos ", "Atención!", JOptionPane.WARNING_MESSAGE);
+//            JOptionPane.showMessageDialog(contenedor, "Esta fila no se puede eliminar ya que esta referenciada en la tabla objetos ", "Atención!", JOptionPane.WARNING_MESSAGE);
+            System.out.println(e.getMessage());
         }
     }
     
-    private void informacionObjetos() {
+    private void actualizarInformacionObjetos() {
         try {
         query = conn.createStatement();
         ResultSet rs;
@@ -238,6 +247,15 @@ try {
             pesoMaximoObjetos.setText(String.valueOf( rs.getDouble("MAX")));
             pesoPromedioObjetos.setText(String.valueOf(rs.getDouble("AVG")));
             pesoMinimoObjetos.setText(String.valueOf(rs.getDouble("MIN")));
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void actualizarInformacionResumen(){
+        try{
+            query = conn.createStatement();
+            
         } catch (SQLException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1065,11 +1083,7 @@ try {
     }//GEN-LAST:event_modificarPersonasBtnActionPerformed
 
     private void eliminarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPersonasBtnActionPerformed
-         try {
-            eliminarTupla("Personas");
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        eliminarTupla("Personas");
     }//GEN-LAST:event_eliminarPersonasBtnActionPerformed
 
     private void modificarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarCajasBtnActionPerformed
@@ -1086,11 +1100,7 @@ try {
     }//GEN-LAST:event_modificarCajasBtnActionPerformed
 
     private void eliminarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarCajasBtnActionPerformed
-        try {
-            eliminarTupla("Cajas");
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        eliminarTupla("Cajas");
     }//GEN-LAST:event_eliminarCajasBtnActionPerformed
 
     private void modificarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarObjetoBtnActionPerformed
@@ -1098,17 +1108,14 @@ try {
     }//GEN-LAST:event_modificarObjetoBtnActionPerformed
 
     private void eliminarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarObjetoBtnActionPerformed
-        try {
-            eliminarTupla("Objetos");
-        } catch (SQLException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        eliminarTupla("Objetos");
     }//GEN-LAST:event_eliminarObjetoBtnActionPerformed
 
     private void buscarCodigoObjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCodigoObjetoActionPerformed
         try {
-            query = conn.createStatement();
-            result = query.executeQuery("SELECT * FROM Objetos WHERE o_cod = " + "'" + codigoObjetoTextField.getText().toUpperCase() + "'");
+            p_query = conn.prepareStatement("SELECT * FROM Objetos WHERE O_Cod = ?");
+            p_query.setString(1, codigoObjetoTextField.getText().toUpperCase());
+            result = p_query.executeQuery();
             tablaObjetos.setModel(resultToTable(result));
             mostrarTodosBtn.setEnabled(true);
         } catch (SQLException ex) {
