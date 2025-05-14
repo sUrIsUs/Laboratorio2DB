@@ -56,6 +56,7 @@ public class App extends javax.swing.JFrame {
         
         // Inicio ejecución
         initComponents();
+        showPanel(inicioPanel);
         
         // Muestro fecha
         todayDate.setText("Hoy es " + day + " de " + months[month - 1] + " de " + year);
@@ -69,8 +70,7 @@ public class App extends javax.swing.JFrame {
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
         
         // Cargo la base de datos si no fue cargada previamente
-        query = conn.createStatement();
-            cargaSQL();
+        cargaSQL();
 
         // Instancio las tablas
         actualizarInformacionObjetos();
@@ -92,63 +92,67 @@ public class App extends javax.swing.JFrame {
     // Función que reliza la inicialización de las tablas en la BD
     public final void cargaSQL() {
         
-try {
-                // Creo tablas
-        query = conn.createStatement();
-        query.execute("CREATE TABLE IF NOT EXISTS Sitios("
-                + "S_Cod VARCHAR(20) PRIMARY KEY, "
-                + "S_Localidad VARCHAR(30) NOT NULL)");
-     
-        query.execute("CREATE TABLE IF NOT EXISTS Cuadriculas("
-                + "Cu_Cod VARCHAR(20) PRIMARY KEY, "
-                + "S_Cod_Dividido VARCHAR(20), "
-                + "FOREIGN KEY (S_Cod_Dividido) REFERENCES Sitios(S_Cod))");
+        try {
+            // Creo tablas
+            query = conn.createStatement();
+            query.execute("CREATE TABLE IF NOT EXISTS Sitios("
+                    + "S_Cod VARCHAR(20) PRIMARY KEY, "
+                    + "S_Localidad VARCHAR(30) NOT NULL)");
 
-        query.execute("CREATE TABLE IF NOT EXISTS Cajas("
-                + "Ca_Cod VARCHAR(20) PRIMARY KEY, "
-                + "Ca_Fecha DATE NOT NULL, "
-                + "Ca_Lugar VARCHAR(50) NOT NULL)");
+            query.execute("CREATE TABLE IF NOT EXISTS Cuadriculas("
+                    + "Cu_Cod VARCHAR(20) PRIMARY KEY, "
+                    + "S_Cod_Dividido VARCHAR(20), "
+                    + "FOREIGN KEY (S_Cod_Dividido) REFERENCES Sitios(S_Cod))");
 
-        query.execute("CREATE TABLE IF NOT EXISTS Personas("
-                + "P_DNI CHAR(8) PRIMARY KEY, "
-                + "P_Nombre VARCHAR(50) NOT NULL, "
-                + "P_Apellido VARCHAR(50) NOT NULL, "
-                + "P_Email VARCHAR(70) NOT NULL UNIQUE, "
-                + "P_Telefono VARCHAR(15) NOT NULL UNIQUE)");
-      
-        query.execute("CREATE TYPE tipo AS ENUM('L', 'C'); "
-                + "CREATE TABLE IF NOT EXISTS Objetos("
-                + "O_Cod VARCHAR(20) PRIMARY KEY, "
-                + "O_Nombre VARCHAR(50) NOT NULL, "
-                + "O_TipoExtraccion VARCHAR(50) NOT NULL, "
-                + "O_Alto FLOAT NOT NULL, "
-                + "O_Largo FLOAT NOT NULL, "
-                + "O_Espesor FLOAT NOT NULL, "
-                + "O_Peso FLOAT NOT NULL, "
-                + "O_Cantidad INT NOT NULL, "
-                + "O_FechaRegistro DATE NOT NULL, "
-                + "O_Descripcion VARCHAR(200) NOT NULL, "
-                + "O_Origen VARCHAR(50), "
-                + "Cu_Cod_Asocia VARCHAR(20), "
-                + "Ca_Cod_Contiene VARCHAR(20), "
-                + "P_DNI_Ingresa CHAR(8), "
-                + "O_Es tipo NOT NULL, "
-                + "FOREIGN KEY (Cu_Cod_Asocia) REFERENCES Cuadriculas(Cu_Cod), "
-                + "FOREIGN KEY (Ca_Cod_Contiene) REFERENCES Cajas(Ca_Cod), "
-                + "FOREIGN KEY (P_DNI_Ingresa) REFERENCES Personas(P_DNI))");
-       
-        query.execute("CREATE TABLE IF NOT EXISTS Liticos("
-                + "O_Cod VARCHAR(20) PRIMARY KEY, "
-                + "L_FechaCreacion INT NOT NULL, "
-                + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod))");
-        
-        query.execute("CREATE TABLE IF NOT EXISTS Ceramicos("
-                + "O_Cod VARCHAR(20) PRIMARY KEY, "
-                + "C_Color VARCHAR(20) NOT NULL, "
-                + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod))");
-        
-        // Instancio tablas
-        
+            query.execute("CREATE TABLE IF NOT EXISTS Cajas("
+                    + "Ca_Cod VARCHAR(20) PRIMARY KEY, "
+                    + "Ca_Fecha DATE NOT NULL, "
+                    + "Ca_Lugar VARCHAR(50) NOT NULL)");
+
+            query.execute("CREATE TABLE IF NOT EXISTS Personas("
+                    + "P_DNI CHAR(8) PRIMARY KEY, "
+                    + "P_Nombre VARCHAR(50) NOT NULL, "
+                    + "P_Apellido VARCHAR(50) NOT NULL, "
+                    + "P_Email VARCHAR(70) NOT NULL UNIQUE, "
+                    + "P_Telefono VARCHAR(15) NOT NULL UNIQUE)");
+
+            query.execute("DO $$ BEGIN " +
+              "IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tipo') THEN " +
+              "CREATE TYPE tipo AS ENUM('L', 'C'); " +
+              "END IF; " +
+              "END $$;");
+            
+            query.execute("CREATE TABLE IF NOT EXISTS Objetos("
+                    + "O_Cod VARCHAR(20) PRIMARY KEY, "
+                    + "O_Nombre VARCHAR(50) NOT NULL, "
+                    + "O_TipoExtraccion VARCHAR(50) NOT NULL, "
+                    + "O_Alto FLOAT NOT NULL, "
+                    + "O_Largo FLOAT NOT NULL, "
+                    + "O_Espesor FLOAT NOT NULL, "
+                    + "O_Peso FLOAT NOT NULL, "
+                    + "O_Cantidad INT NOT NULL, "
+                    + "O_FechaRegistro DATE NOT NULL, "
+                    + "O_Descripcion VARCHAR(200) NOT NULL, "
+                    + "O_Origen VARCHAR(50), "
+                    + "Cu_Cod_Asocia VARCHAR(20), "
+                    + "Ca_Cod_Contiene VARCHAR(20), "
+                    + "P_DNI_Ingresa CHAR(8), "
+                    + "O_Es tipo NOT NULL, "
+                    + "FOREIGN KEY (Cu_Cod_Asocia) REFERENCES Cuadriculas(Cu_Cod), "
+                    + "FOREIGN KEY (Ca_Cod_Contiene) REFERENCES Cajas(Ca_Cod), "
+                    + "FOREIGN KEY (P_DNI_Ingresa) REFERENCES Personas(P_DNI) ON DELETE CASCADE)");
+
+            query.execute("CREATE TABLE IF NOT EXISTS Liticos("
+                    + "O_Cod VARCHAR(20) PRIMARY KEY, "
+                    + "L_FechaCreacion INT NOT NULL, "
+                    + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod) ON DELETE CASCADE)");
+
+            query.execute("CREATE TABLE IF NOT EXISTS Ceramicos("
+                    + "O_Cod VARCHAR(20) PRIMARY KEY, "
+                    + "C_Color VARCHAR(20) NOT NULL, "
+                    + "FOREIGN KEY (O_Cod) REFERENCES Objetos(O_Cod) ON DELETE CASCADE)");
+
+            // Instancio tablas
             File archivo = new File("Inserta_Datos2.sql");
             FileReader rArchivo = new FileReader(archivo);
             BufferedReader bArchivo = new BufferedReader(rArchivo);
@@ -165,8 +169,10 @@ try {
                     sql = new StringBuilder(); // Reiniciar para la siguiente sentencia
                 }
             }
+            query.execute("INSERT INTO Personas VALUES(25544555 ,'Rodolphe', 'Rominov', 'rrominovm@sciencedaily.com', 7135986253)");
+            query.execute("DELETE FROM Personas WHERE P_DNI = '40417189'");
             bArchivo.close();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getErrorCode());
         } catch (FileNotFoundException ex) {
             JOptionPane.showMessageDialog(background, "Hubo un error en la carga de datos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -174,60 +180,56 @@ try {
             JOptionPane.showMessageDialog(background, "Hubo un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     // Función que realiza la consulta SELECT * 
     private void updateTabla(String nombreTabla) throws SQLException {
         query = conn.createStatement();
         result = query.executeQuery("SELECT * FROM " + nombreTabla);
         mapTablas.get(nombreTabla).setModel(resultToTable(result));
     }
-    
+
     // Función auxiliar para convertir las consultas en tablas
     private static DefaultTableModel resultToTable(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
-        
+
         // Creamos las columnas
         Vector<String> columnNames = new Vector<>();
         int columnCount = metaData.getColumnCount();
         for (int column = 1; column <= columnCount; column++) {
             columnNames.add(metaData.getColumnName(column));
         }
-        
+
         // Creamos las filas
         Vector<Vector<Object>> data = new Vector<>();
         while (rs.next()) {
             Vector<Object> vector = new Vector<>();
-            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++){
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 vector.add(rs.getObject(columnIndex));
             }
             data.add(vector);
         }
-        
+
         return new DefaultTableModel(data, columnNames);
     }
-    
+
     // Funcion que me permite eliminar una tupla, asumimos que el codigo de cada esquema se encuentra en la primer columna
     private void eliminarTupla(String nombreTabla) {
-        try{
+        try {
             String codigo = (mapTablas.get(nombreTabla).getValueAt(mapTablas.get(nombreTabla).getSelectedRow(), 0)).toString();
-            if(JOptionPane.showConfirmDialog(null, "Está seguro de eliminar " + codigo +"?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0){
+            if (JOptionPane.showConfirmDialog(null, "Está seguro de eliminar " + codigo + "?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0) {
                 String nombreColumnaCodigo = mapTablas.get(nombreTabla).getColumnName(0);
-//                query = conn.createStatement();
-//                query.execute("DELETE FROM " + nombreTabla + " WHERE " + nombreColumnaCodigo + " = " + "'" + codigo.toUpperCase() + "'");
-//                updateTabla(nombreTabla);
                 String sql = "DELETE FROM " + nombreTabla + " WHERE " + nombreColumnaCodigo + " = ?";
                 p_query = conn.prepareStatement(sql);
                 p_query.setString(1, codigo.toUpperCase());
                 p_query.executeQuery();
                 updateTabla(nombreTabla);
-                
-            }        
-        }catch(SQLException e){
+            }
+        } catch (SQLException e) {
 //            JOptionPane.showMessageDialog(contenedor, "Esta fila no se puede eliminar ya que esta referenciada en la tabla objetos ", "Atención!", JOptionPane.WARNING_MESSAGE);
             System.out.println(e.getMessage());
         }
     }
-    
+
     private void actualizarInformacionObjetos() {
         try {
             query = conn.createStatement();
@@ -238,9 +240,9 @@ try {
             rs = query.executeQuery("SELECT COUNT(O_cod) AS count FROM Ceramicos");
             rs.next();
             cantidadCeramicos.setText(String.valueOf(rs.getInt("count")));
-            rs= query.executeQuery("SELECT MAX(o_peso) AS MAX, AVG(o_peso) AS AVG, MIN(o_peso) AS MIN FROM Objetos");
+            rs = query.executeQuery("SELECT MAX(o_peso) AS MAX, AVG(o_peso) AS AVG, MIN(o_peso) AS MIN FROM Objetos");
             rs.next();
-            pesoMaximoObjetos.setText(String.valueOf( rs.getDouble("MAX")));
+            pesoMaximoObjetos.setText(String.valueOf(rs.getDouble("MAX")));
             pesoPromedioObjetos.setText(String.valueOf(rs.getDouble("AVG")));
             pesoMinimoObjetos.setText(String.valueOf(rs.getDouble("MIN")));
         } catch (SQLException ex) {
@@ -278,11 +280,22 @@ try {
         separadorHorizontalHeader = new javax.swing.JSeparator();
         separadorVerticalContainer = new javax.swing.JSeparator();
         contenedor = new javax.swing.JPanel();
-        modificarCajasPanel = new javax.swing.JPanel();
-        agregarCajasPanel = new javax.swing.JPanel();
-        modificarObjetosPanel = new javax.swing.JPanel();
+        arqueologosPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaPersonas = new javax.swing.JTable();
+        seleccionarVistaPersonasBtn = new javax.swing.JButton();
+        modificarPersonasBtn = new javax.swing.JButton();
+        agregarPersonasBtn = new javax.swing.JButton();
+        eliminarPersonasBtn = new javax.swing.JButton();
+        inicioPanel = new javax.swing.JPanel();
+        jLabel31 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
         agregarObjetosPanel = new javax.swing.JPanel();
-        codigoObjTxt = new javax.swing.JTextField();
+        codigoObjTF = new javax.swing.JTextField();
         nombreObjTF = new javax.swing.JTextField();
         tipoExtraccionObjTF = new javax.swing.JTextField();
         altoObjTF = new javax.swing.JTextField();
@@ -292,9 +305,9 @@ try {
         cantidadObjTF = new javax.swing.JTextField();
         descripcionObjTF = new javax.swing.JTextField();
         origenObjTF = new javax.swing.JTextField();
-        codigpCuadriculaoObjTF = new javax.swing.JTextField();
+        codigoCuadriculaObjTF = new javax.swing.JTextField();
         codigoCajaObjTF = new javax.swing.JTextField();
-        dniObjTF = new javax.swing.JTextField();
+        dniPersonaObjTF = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -322,15 +335,7 @@ try {
         agregarCajasBtn = new javax.swing.JButton();
         eliminarCajasBtn = new javax.swing.JButton();
         seleccionarVistaCajasBtn = new javax.swing.JButton();
-        arqueologosPanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tablaPersonas = new javax.swing.JTable();
-        seleccionarVistaPersonasBtn = new javax.swing.JButton();
-        modificarPersonasBtn = new javax.swing.JButton();
-        agregarPersonasBtn = new javax.swing.JButton();
-        eliminarPersonasBtn = new javax.swing.JButton();
-        agregarPersonasPanel = new javax.swing.JPanel();
-        modificarPersonasPanel = new javax.swing.JPanel();
+        mostrarPorPesoBtn = new javax.swing.JButton();
         resumenPanel = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
@@ -391,238 +396,7 @@ try {
         background.add(separadorHorizontalHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 1000, -1));
 
         separadorVerticalContainer.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        background.add(separadorVerticalContainer, new org.netbeans.lib.awtextra.AbsoluteConstraints(147, 70, -1, 540));
-
-        javax.swing.GroupLayout modificarCajasPanelLayout = new javax.swing.GroupLayout(modificarCajasPanel);
-        modificarCajasPanel.setLayout(modificarCajasPanelLayout);
-        modificarCajasPanelLayout.setHorizontalGroup(
-            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        modificarCajasPanelLayout.setVerticalGroup(
-            modificarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout agregarCajasPanelLayout = new javax.swing.GroupLayout(agregarCajasPanel);
-        agregarCajasPanel.setLayout(agregarCajasPanelLayout);
-        agregarCajasPanelLayout.setHorizontalGroup(
-            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        agregarCajasPanelLayout.setVerticalGroup(
-            agregarCajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout modificarObjetosPanelLayout = new javax.swing.GroupLayout(modificarObjetosPanel);
-        modificarObjetosPanel.setLayout(modificarObjetosPanelLayout);
-        modificarObjetosPanelLayout.setHorizontalGroup(
-            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
-        );
-        modificarObjetosPanelLayout.setVerticalGroup(
-            modificarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        agregarObjetosPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        codigoObjTxt.setText("jTextField1");
-        agregarObjetosPanel.add(codigoObjTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 130, 75, -1));
-
-        nombreObjTF.setText("jTextField2");
-        agregarObjetosPanel.add(nombreObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 170, 75, -1));
-
-        tipoExtraccionObjTF.setText("jTextField3");
-        agregarObjetosPanel.add(tipoExtraccionObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 220, 75, -1));
-
-        altoObjTF.setText("jTextField4");
-        altoObjTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                altoObjTFActionPerformed(evt);
-            }
-        });
-        agregarObjetosPanel.add(altoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 270, 75, -1));
-
-        largoObjTF.setText("jTextField5");
-        agregarObjetosPanel.add(largoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 320, 75, -1));
-
-        espesorObjTF.setText("jTextField6");
-        espesorObjTF.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                espesorObjTFActionPerformed(evt);
-            }
-        });
-        agregarObjetosPanel.add(espesorObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 360, 75, -1));
-
-        pesoObjTF.setText("jTextField7");
-        agregarObjetosPanel.add(pesoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 400, 75, -1));
-
-        cantidadObjTF.setText("jTextField8");
-        agregarObjetosPanel.add(cantidadObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, 75, -1));
-
-        descripcionObjTF.setText("jTextField10");
-        agregarObjetosPanel.add(descripcionObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 180, 81, -1));
-
-        origenObjTF.setText("jTextField11");
-        agregarObjetosPanel.add(origenObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 230, 81, -1));
-
-        codigpCuadriculaoObjTF.setText("jTextField12");
-        agregarObjetosPanel.add(codigpCuadriculaoObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 270, 81, -1));
-
-        codigoCajaObjTF.setText("jTextField13");
-        agregarObjetosPanel.add(codigoCajaObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 320, 81, -1));
-
-        dniObjTF.setText("jTextField14");
-        agregarObjetosPanel.add(dniObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 360, 81, -1));
-
-        jLabel15.setText("Código");
-        agregarObjetosPanel.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 140, 43, -1));
-
-        jLabel16.setText("Nombre");
-        agregarObjetosPanel.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 180, 55, -1));
-
-        jLabel17.setText("Tipo extracción");
-        agregarObjetosPanel.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 230, -1, -1));
-
-        jLabel18.setText("Alto");
-        agregarObjetosPanel.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 280, 43, -1));
-
-        jLabel19.setText("Largo");
-        agregarObjetosPanel.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 320, 43, -1));
-
-        jLabel20.setText("Espesor");
-        agregarObjetosPanel.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 370, 43, -1));
-
-        jLabel21.setText("Peso");
-        agregarObjetosPanel.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 410, 43, -1));
-
-        jLabel22.setText("Cantidad");
-        agregarObjetosPanel.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 450, 70, -1));
-
-        jLabel23.setText("Fecha registro");
-        agregarObjetosPanel.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 150, 85, -1));
-
-        jLabel24.setText("Descripción");
-        agregarObjetosPanel.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 190, 73, -1));
-
-        jLabel25.setText("Origen");
-        agregarObjetosPanel.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 230, 43, -1));
-
-        jLabel26.setText("Código cuadricula");
-        agregarObjetosPanel.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 280, 104, -1));
-
-        jLabel27.setText("Código caja");
-        agregarObjetosPanel.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 320, 71, -1));
-
-        jLabel28.setText("DNI Arqueologo");
-        agregarObjetosPanel.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 370, -1, -1));
-
-        tipoObjCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cerámico", "Litico" }));
-        tipoObjCB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tipoObjCBActionPerformed(evt);
-            }
-        });
-        agregarObjetosPanel.add(tipoObjCB, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 400, -1, -1));
-
-        jLabel29.setText("Tipo");
-        agregarObjetosPanel.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 410, 43, -1));
-
-        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel30.setText("Ingrese la información del objeto");
-        agregarObjetosPanel.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(294, 33, 306, -1));
-        agregarObjetosPanel.add(fechaRegistroObjTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 140, -1, -1));
-
-        ingresarObjetoBtn.setText("Ingresar");
-        ingresarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ingresarObjetoBtnActionPerformed(evt);
-            }
-        });
-        agregarObjetosPanel.add(ingresarObjetoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 500, -1, -1));
-
-        cancelarObjetoBtn.setText("Cancelar");
-        agregarObjetosPanel.add(cancelarObjetoBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 500, -1, -1));
-
-        cajasPanel.setPreferredSize(new java.awt.Dimension(850, 541));
-
-        tablaCajas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane3.setViewportView(tablaCajas);
-
-        modificarCajasBtn.setText("Modificar");
-        modificarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modificarCajasBtnActionPerformed(evt);
-            }
-        });
-
-        agregarCajasBtn.setText("Agregar");
-        agregarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                agregarCajasBtnActionPerformed(evt);
-            }
-        });
-
-        eliminarCajasBtn.setText("Eliminar");
-        eliminarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eliminarCajasBtnActionPerformed(evt);
-            }
-        });
-
-        seleccionarVistaCajasBtn.setText("Mostrar cajas vacias");
-        seleccionarVistaCajasBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                seleccionarVistaCajasBtnActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout cajasPanelLayout = new javax.swing.GroupLayout(cajasPanel);
-        cajasPanel.setLayout(cajasPanelLayout);
-        cajasPanelLayout.setHorizontalGroup(
-            cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cajasPanelLayout.createSequentialGroup()
-                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(seleccionarVistaCajasBtn)
-                    .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(cajasPanelLayout.createSequentialGroup()
-                            .addGap(190, 190, 190)
-                            .addComponent(agregarCajasBtn)
-                            .addGap(112, 112, 112)
-                            .addComponent(modificarCajasBtn)
-                            .addGap(112, 112, 112)
-                            .addComponent(eliminarCajasBtn))
-                        .addGroup(cajasPanelLayout.createSequentialGroup()
-                            .addGap(33, 33, 33)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(53, Short.MAX_VALUE))
-        );
-        cajasPanelLayout.setVerticalGroup(
-            cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cajasPanelLayout.createSequentialGroup()
-                .addContainerGap(49, Short.MAX_VALUE)
-                .addComponent(seleccionarVistaCajasBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(agregarCajasBtn)
-                    .addComponent(modificarCajasBtn)
-                    .addComponent(eliminarCajasBtn))
-                .addGap(18, 18, 18))
-        );
+        background.add(separadorVerticalContainer, new org.netbeans.lib.awtextra.AbsoluteConstraints(147, 30, -1, 580));
 
         tablaPersonas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -645,6 +419,7 @@ try {
         });
 
         modificarPersonasBtn.setText("Modificar");
+        modificarPersonasBtn.setEnabled(false);
         modificarPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modificarPersonasBtnActionPerformed(evt);
@@ -652,6 +427,7 @@ try {
         });
 
         agregarPersonasBtn.setText("Agregar");
+        agregarPersonasBtn.setEnabled(false);
         agregarPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 agregarPersonasBtnActionPerformed(evt);
@@ -664,28 +440,6 @@ try {
                 eliminarPersonasBtnActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout agregarPersonasPanelLayout = new javax.swing.GroupLayout(agregarPersonasPanel);
-        agregarPersonasPanel.setLayout(agregarPersonasPanelLayout);
-        agregarPersonasPanelLayout.setHorizontalGroup(
-            agregarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        agregarPersonasPanelLayout.setVerticalGroup(
-            agregarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout modificarPersonasPanelLayout = new javax.swing.GroupLayout(modificarPersonasPanel);
-        modificarPersonasPanel.setLayout(modificarPersonasPanelLayout);
-        modificarPersonasPanelLayout.setHorizontalGroup(
-            modificarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 850, Short.MAX_VALUE)
-        );
-        modificarPersonasPanelLayout.setVerticalGroup(
-            modificarPersonasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout arqueologosPanelLayout = new javax.swing.GroupLayout(arqueologosPanel);
         arqueologosPanel.setLayout(arqueologosPanelLayout);
@@ -702,21 +456,17 @@ try {
             .addGroup(arqueologosPanelLayout.createSequentialGroup()
                 .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(arqueologosPanelLayout.createSequentialGroup()
-                        .addContainerGap(705, Short.MAX_VALUE)
+                        .addContainerGap(699, Short.MAX_VALUE)
                         .addComponent(seleccionarVistaPersonasBtn))
                     .addGroup(arqueologosPanelLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(34, Short.MAX_VALUE))
-            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(modificarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         arqueologosPanelLayout.setVerticalGroup(
             arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(arqueologosPanelLayout.createSequentialGroup()
-                .addContainerGap(55, Short.MAX_VALUE)
+                .addContainerGap(45, Short.MAX_VALUE)
                 .addComponent(seleccionarVistaPersonasBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -726,10 +476,390 @@ try {
                     .addComponent(agregarPersonasBtn)
                     .addComponent(modificarPersonasBtn))
                 .addContainerGap())
-            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(agregarPersonasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(modificarPersonasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabel31.setText("Bienvenido!");
+
+        jLabel32.setIcon(new javax.swing.ImageIcon("C:\\Users\\facun\\Documents\\Facultad\\3er Año\\1er Cuatri\\Base de Datos\\Unidades\\Laboratorio 2\\Laboratorio2DB\\Laboratorio2Bd\\src\\main\\java\\images\\UNSL.png")); // NOI18N
+        jLabel32.setText("jLabel32");
+
+        jLabel33.setIcon(new javax.swing.ImageIcon("C:\\Users\\facun\\Documents\\Facultad\\3er Año\\1er Cuatri\\Base de Datos\\Unidades\\Laboratorio 2\\Laboratorio2DB\\Laboratorio2Bd\\src\\main\\java\\images\\FCFMyN.png")); // NOI18N
+        jLabel33.setText("jLabel33");
+
+        jLabel34.setIcon(new javax.swing.ImageIcon("C:\\Users\\facun\\Documents\\Facultad\\3er Año\\1er Cuatri\\Base de Datos\\Unidades\\Laboratorio 2\\Laboratorio2DB\\Laboratorio2Bd\\src\\main\\java\\images\\Dpto Informática.png")); // NOI18N
+        jLabel34.setText("jLabel34");
+
+        javax.swing.GroupLayout inicioPanelLayout = new javax.swing.GroupLayout(inicioPanel);
+        inicioPanel.setLayout(inicioPanelLayout);
+        inicioPanelLayout.setHorizontalGroup(
+            inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(inicioPanelLayout.createSequentialGroup()
+                .addGap(306, 306, 306)
+                .addGroup(inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(inicioPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(inicioPanelLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel31))
+                    .addGroup(inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jSeparator2)
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(320, Short.MAX_VALUE))
+        );
+        inicioPanelLayout.setVerticalGroup(
+            inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(inicioPanelLayout.createSequentialGroup()
+                .addGap(164, 164, 164)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(160, 160, 160)
+                .addGroup(inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel33)
+                    .addComponent(jLabel34))
+                .addGap(91, 91, 91))
+        );
+
+        altoObjTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                altoObjTFActionPerformed(evt);
+            }
+        });
+
+        largoObjTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                largoObjTFActionPerformed(evt);
+            }
+        });
+
+        espesorObjTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                espesorObjTFActionPerformed(evt);
+            }
+        });
+
+        origenObjTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                origenObjTFActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setText("Código");
+
+        jLabel16.setText("Nombre");
+
+        jLabel17.setText("Tipo extracción");
+
+        jLabel18.setText("Alto");
+
+        jLabel19.setText("Largo");
+
+        jLabel20.setText("Espesor");
+
+        jLabel21.setText("Peso");
+
+        jLabel22.setText("Cantidad");
+
+        jLabel23.setText("Fecha registro");
+
+        jLabel24.setText("Descripción");
+
+        jLabel25.setText("Origen");
+
+        jLabel26.setText("Código cuadricula");
+
+        jLabel27.setText("Código caja");
+
+        jLabel28.setText("DNI Arqueologo");
+
+        tipoObjCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ceramico", "Litico" }));
+        tipoObjCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipoObjCBActionPerformed(evt);
+            }
+        });
+
+        jLabel29.setText("Tipo");
+
+        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel30.setText("Ingrese la información del objeto");
+
+        ingresarObjetoBtn.setText("Ingresar");
+        ingresarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ingresarObjetoBtnActionPerformed(evt);
+            }
+        });
+
+        cancelarObjetoBtn.setText("Cancelar");
+        cancelarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarObjetoBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout agregarObjetosPanelLayout = new javax.swing.GroupLayout(agregarObjetosPanel);
+        agregarObjetosPanel.setLayout(agregarObjetosPanelLayout);
+        agregarObjetosPanelLayout.setHorizontalGroup(
+            agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(codigoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addComponent(fechaRegistroObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(nombreObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
+                .addComponent(descripcionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel17)
+                .addGap(18, 18, 18)
+                .addComponent(tipoExtraccionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(67, 67, 67)
+                .addComponent(origenObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(altoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addComponent(codigoCuadriculaObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(largoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(codigoCajaObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(espesorObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel28)
+                .addGap(22, 22, 22)
+                .addComponent(dniPersonaObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(57, 57, 57)
+                .addComponent(pesoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(195, 195, 195)
+                .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(67, 67, 67)
+                .addComponent(tipoObjCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(160, 160, 160)
+                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(cantidadObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(640, 640, 640)
+                .addComponent(cancelarObjetoBtn)
+                .addGap(10, 10, 10)
+                .addComponent(ingresarObjetoBtn))
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(241, 241, 241)
+                .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        agregarObjetosPanelLayout.setVerticalGroup(
+            agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(jLabel30)
+                .addGap(67, 67, 67)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel15))
+                    .addComponent(codigoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel23))
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(fechaRegistroObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(4, 4, 4)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel16))
+                    .addComponent(nombreObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel24))
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(descripcionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(14, 14, 14)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tipoExtraccionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel25)
+                            .addComponent(origenObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(14, 14, 14)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(altoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(codigoCuadriculaObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel26))))
+                .addGap(19, 19, 19)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addComponent(largoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel27)
+                        .addComponent(codigoCajaObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(14, 14, 14)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(espesorObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dniPersonaObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel28))))
+                .addGap(14, 14, 14)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pesoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tipoObjCB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel21)
+                            .addComponent(jLabel29))))
+                .addGap(19, 19, 19)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(cantidadObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cancelarObjetoBtn)
+                    .addComponent(ingresarObjetoBtn)))
+        );
+
+        cajasPanel.setPreferredSize(new java.awt.Dimension(850, 541));
+
+        tablaCajas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tablaCajas);
+
+        modificarCajasBtn.setText("Modificar");
+        modificarCajasBtn.setEnabled(false);
+        modificarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarCajasBtnActionPerformed(evt);
+            }
+        });
+
+        agregarCajasBtn.setText("Agregar");
+        agregarCajasBtn.setEnabled(false);
+        agregarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarCajasBtnActionPerformed(evt);
+            }
+        });
+
+        eliminarCajasBtn.setText("Eliminar");
+        eliminarCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarCajasBtnActionPerformed(evt);
+            }
+        });
+
+        seleccionarVistaCajasBtn.setText("Mostrar cajas vacias");
+        seleccionarVistaCajasBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                seleccionarVistaCajasBtnActionPerformed(evt);
+            }
+        });
+
+        mostrarPorPesoBtn.setText("Mostar por peso");
+        mostrarPorPesoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mostrarPorPesoBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout cajasPanelLayout = new javax.swing.GroupLayout(cajasPanel);
+        cajasPanel.setLayout(cajasPanelLayout);
+        cajasPanelLayout.setHorizontalGroup(
+            cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cajasPanelLayout.createSequentialGroup()
+                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(cajasPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(mostrarPorPesoBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(seleccionarVistaCajasBtn))
+                    .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(cajasPanelLayout.createSequentialGroup()
+                            .addGap(190, 190, 190)
+                            .addComponent(agregarCajasBtn)
+                            .addGap(112, 112, 112)
+                            .addComponent(modificarCajasBtn)
+                            .addGap(112, 112, 112)
+                            .addComponent(eliminarCajasBtn))
+                        .addGroup(cajasPanelLayout.createSequentialGroup()
+                            .addGap(33, 33, 33)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 776, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        cajasPanelLayout.setVerticalGroup(
+            cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cajasPanelLayout.createSequentialGroup()
+                .addContainerGap(39, Short.MAX_VALUE)
+                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(seleccionarVistaCajasBtn)
+                    .addComponent(mostrarPorPesoBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(agregarCajasBtn)
+                    .addComponent(modificarCajasBtn)
+                    .addComponent(eliminarCajasBtn))
+                .addGap(18, 18, 18))
         );
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -800,7 +930,7 @@ try {
                 .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(cantidadCajas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(191, Short.MAX_VALUE))
+                .addContainerGap(181, Short.MAX_VALUE))
         );
 
         objetosPanel.setPreferredSize(new java.awt.Dimension(862, 553));
@@ -827,6 +957,7 @@ try {
         });
 
         modificarObjetoBtn.setText("Modificar");
+        modificarObjetoBtn.setEnabled(false);
         modificarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modificarObjetoBtnActionPerformed(evt);
@@ -1039,70 +1170,44 @@ try {
         contenedor.setLayout(contenedorLayout);
         contenedorLayout.setHorizontalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 862, Short.MAX_VALUE)
+            .addGap(0, 850, Short.MAX_VALUE)
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(objetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(objetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 850, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(resumenPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(arqueologosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(cajasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE))
-            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(modificarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(agregarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(cajasPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contenedorLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(inicioPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contenedorLayout.setVerticalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 570, Short.MAX_VALUE)
+            .addGap(0, 560, Short.MAX_VALUE)
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(objetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))
+                .addComponent(objetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(resumenPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(arqueologosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(cajasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))
-            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(modificarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(agregarCajasPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(contenedorLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(cajasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contenedorLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(inicioPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        background.add(contenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 850, 570));
+        background.add(contenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 40, 850, 560));
 
         title.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         title.setText("Archeologic Data Base Manager");
@@ -1238,13 +1343,13 @@ try {
 
     private void seleccionarVistaCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarVistaCajasBtnActionPerformed
         try {
-                query = conn.createStatement();
-            if(seleccionarVistaCajasBtn.getText().equals("Mostrar cajas vacias")){
+            mostrarPorPesoBtn.setEnabled(true);
+            query = conn.createStatement();
+            if (seleccionarVistaCajasBtn.getText().equals("Mostrar cajas vacias")) {
                 seleccionarVistaCajasBtn.setText("Mostrar todas las cajas");
                 result = query.executeQuery("SELECT ca_cod, ca_lugar FROM Cajas WHERE ca_cod NOT IN (SELECT ca_cod_Contiene FROM Objetos)");
                 tablaCajas.setModel(resultToTable(result));
-            }
-            else{
+            } else {
                 seleccionarVistaCajasBtn.setText("Mostrar cajas vacias");
                 updateTabla("Cajas");
             }
@@ -1254,19 +1359,26 @@ try {
     }//GEN-LAST:event_seleccionarVistaCajasBtnActionPerformed
 
     private void agregarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarCajasBtnActionPerformed
-        showPanel(agregarCajasPanel);
+        
     }//GEN-LAST:event_agregarCajasBtnActionPerformed
 
     private void cajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cajasBtnActionPerformed
+        try {
+            mostrarPorPesoBtn.setEnabled(true);
+            seleccionarVistaCajasBtn.setText("Mostrar cajas vacias");
+            updateTabla("Cajas");
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
         showPanel(cajasPanel);
     }//GEN-LAST:event_cajasBtnActionPerformed
 
     private void agregarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarPersonasBtnActionPerformed
-        showPanel(agregarPersonasPanel);
+        
     }//GEN-LAST:event_agregarPersonasBtnActionPerformed
 
     private void modificarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarPersonasBtnActionPerformed
-       showPanel(modificarPersonasPanel);
+       
     }//GEN-LAST:event_modificarPersonasBtnActionPerformed
 
     private void eliminarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarPersonasBtnActionPerformed
@@ -1276,9 +1388,6 @@ try {
     private void modificarCajasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarCajasBtnActionPerformed
         try {
             tuplaSeleccionada = tablaCajas.getSelectedRow();
-
-            showPanel(modificarCajasPanel);
-
         } catch (ArrayIndexOutOfBoundsException evt1) {
             JOptionPane.showMessageDialog(contenedor, "Seleccione un Proyecto", "Atención!", JOptionPane.INFORMATION_MESSAGE);
         } catch (Throwable evt2) {
@@ -1291,11 +1400,16 @@ try {
     }//GEN-LAST:event_eliminarCajasBtnActionPerformed
 
     private void modificarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarObjetoBtnActionPerformed
-        showPanel(modificarObjetosPanel);
+       
     }//GEN-LAST:event_modificarObjetoBtnActionPerformed
 
     private void eliminarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarObjetoBtnActionPerformed
-        eliminarTupla("Objetos");
+        try {
+            eliminarTupla("Objetos");
+            updateTabla("Objetos");
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_eliminarObjetoBtnActionPerformed
 
     private void buscarCodigoObjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCodigoObjetoActionPerformed
@@ -1339,12 +1453,81 @@ try {
     }//GEN-LAST:event_espesorObjTFActionPerformed
 
     private void ingresarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarObjetoBtnActionPerformed
-        // TODO add your handling code here:
+        try{
+            if(codigoObjTF.getText().equals("") || nombreObjTF.getText().equals("") || 
+                    tipoExtraccionObjTF.getText().equals("") || altoObjTF.getText().equals("") || 
+                    largoObjTF.getText().equals("") || espesorObjTF.getText().equals("") || 
+                    pesoObjTF.getText().equals("") || cantidadObjTF.getText().equals("") || 
+                    fechaRegistroObjTF.getDate() == null || descripcionObjTF.getText().equals("") ||
+                    origenObjTF.getText().equals("") || codigoCuadriculaObjTF.getText().equals("") || 
+                    codigoCajaObjTF.getText().equals("") || dniPersonaObjTF.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos...");  
+            }
+            else if(Float.parseFloat(altoObjTF.getText()) < 0 || Float.parseFloat(largoObjTF.getText()) < 0 || 
+                    Float.parseFloat(espesorObjTF.getText()) < 0 || Float.parseFloat(pesoObjTF.getText()) < 0 || 
+                    Integer.parseInt(cantidadObjTF.getText()) < 0 || Integer.parseInt(dniPersonaObjTF.getText()) < 0){
+                JOptionPane.showMessageDialog(contenedor, "Ingrese un valor válido", "Error", JOptionPane.ERROR_MESSAGE);  
+            }
+            else{
+                String sql = "INSERT INTO Objetos VALUES(?, ?, ?, ?, ?, ?, ?, ?, " + "'" + sdf.format(fechaRegistroObjTF.getDate()) + "'" + ", ?, ?, ?, ?, ?, ?::tipo)";
+                p_query = conn.prepareStatement(sql);
+                p_query.setString(1, codigoObjTF.getText());
+                p_query.setString(2, nombreObjTF.getText());
+                p_query.setString(3, tipoExtraccionObjTF.getText());
+                p_query.setFloat(4, Float.parseFloat(altoObjTF.getText()));
+                p_query.setFloat(5, Float.parseFloat(largoObjTF.getText()));
+                p_query.setFloat(6, Float.parseFloat(espesorObjTF.getText()));
+                p_query.setFloat(7, Float.parseFloat(pesoObjTF.getText()));
+                p_query.setInt(8, Integer.parseInt(cantidadObjTF.getText()));
+                p_query.setString(9, descripcionObjTF.getText());
+                p_query.setString(10, origenObjTF.getText());
+                p_query.setString(11, codigoCuadriculaObjTF.getText());
+                p_query.setString(12, codigoCajaObjTF.getText());
+                p_query.setString(13, dniPersonaObjTF.getText());
+                String tipoEnum = tipoObjCB.getSelectedItem().equals("Litico") ? "L" : "C";
+                p_query.setString(14, tipoEnum);
+                if(JOptionPane.showConfirmDialog(null, "Está seguro de agregar el objeto?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0){
+                    p_query.execute();
+                    updateTabla("Objetos");
+                    actualizarInformacionObjetos();
+                }
+                showPanel(objetosPanel);
+            }
+        } catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(contenedor, "Ingrese un valor valido","Error",JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(contenedor, "Verifique que todos los campos esten correctamente ingresados", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_ingresarObjetoBtnActionPerformed
 
     private void tipoObjCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoObjCBActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tipoObjCBActionPerformed
+
+    private void largoObjTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_largoObjTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_largoObjTFActionPerformed
+
+    private void origenObjTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_origenObjTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_origenObjTFActionPerformed
+
+    private void mostrarPorPesoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostrarPorPesoBtnActionPerformed
+        try {
+            mostrarPorPesoBtn.setEnabled(false);
+            query = conn.createStatement();
+            result = query.executeQuery("SELECT ca_cod_contiene AS ca_cod, SUM(o_peso) AS peso FROM Objetos GROUP BY ca_cod_contiene");
+            tablaCajas.setModel(resultToTable(result));
+        } catch (SQLException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mostrarPorPesoBtnActionPerformed
+
+    private void cancelarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarObjetoBtnActionPerformed
+        if(JOptionPane.showConfirmDialog(null, "Está seguro de cancelar?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0){
+            showPanel(objetosPanel);
+        }
+    }//GEN-LAST:event_cancelarObjetoBtnActionPerformed
 
     
     public static void main(String args[]) {
@@ -1385,11 +1568,9 @@ try {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton agregarCajasBtn;
-    private javax.swing.JPanel agregarCajasPanel;
     private javax.swing.JButton agregarObjetoBtn;
     private javax.swing.JPanel agregarObjetosPanel;
     private javax.swing.JButton agregarPersonasBtn;
-    private javax.swing.JPanel agregarPersonasPanel;
     private javax.swing.JTextField altoObjTF;
     private javax.swing.JButton arqueologosBtn;
     private javax.swing.JPanel arqueologosPanel;
@@ -1407,12 +1588,12 @@ try {
     private javax.swing.JTextField cantidadObjTF;
     private javax.swing.JTextField cantidadObjetos;
     private javax.swing.JTextField codigoCajaObjTF;
-    private javax.swing.JTextField codigoObjTxt;
+    private javax.swing.JTextField codigoCuadriculaObjTF;
+    private javax.swing.JTextField codigoObjTF;
     private javax.swing.JTextField codigoObjetoTextField;
-    private javax.swing.JTextField codigpCuadriculaoObjTF;
     private javax.swing.JPanel contenedor;
     private javax.swing.JTextField descripcionObjTF;
-    private javax.swing.JTextField dniObjTF;
+    private javax.swing.JTextField dniPersonaObjTF;
     private javax.swing.JButton eliminarCajasBtn;
     private javax.swing.JButton eliminarObjetoBtn;
     private javax.swing.JButton eliminarPersonasBtn;
@@ -1422,6 +1603,7 @@ try {
     private com.toedter.calendar.JDateChooser fechaRegistroObjTF;
     private javax.swing.JPanel header;
     private javax.swing.JButton ingresarObjetoBtn;
+    private javax.swing.JPanel inicioPanel;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1447,6 +1629,10 @@ try {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1457,14 +1643,14 @@ try {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField largoObjTF;
     private javax.swing.JPanel menu;
     private javax.swing.JButton modificarCajasBtn;
-    private javax.swing.JPanel modificarCajasPanel;
     private javax.swing.JButton modificarObjetoBtn;
-    private javax.swing.JPanel modificarObjetosPanel;
     private javax.swing.JButton modificarPersonasBtn;
-    private javax.swing.JPanel modificarPersonasPanel;
+    private javax.swing.JButton mostrarPorPesoBtn;
     private javax.swing.JButton mostrarTodosBtn;
     private javax.swing.JTextField nombreObjTF;
     private javax.swing.JButton objetosBtn;
