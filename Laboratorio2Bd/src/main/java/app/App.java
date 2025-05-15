@@ -43,8 +43,7 @@ public class App extends javax.swing.JFrame {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     
     // Constantes para la base de datos
-    private static final String DB_NAME = "arqPrueba";
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
     private static final String DB_USER = "postgres";
     private static final String DB_PWD = "admin";
     
@@ -68,8 +67,7 @@ public class App extends javax.swing.JFrame {
         mapTablas.put("Personas", tablaPersonas);
         mapTablas.put("Cajas", tablaCajas);
         
-        // Hago coneccion con la DB
-        conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
+        
         
         // Cargo la base de datos si no fue cargada previamente
         cargaSQL();
@@ -95,6 +93,11 @@ public class App extends javax.swing.JFrame {
     public final void cargaSQL() {
         
         try {
+            // Hago coneccion con la DB
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
+            // Creo la BD
+            query = conn.createStatement();
+            query.executeUpdate("CREATE DATABASE Arqueologos");
             // Creo tablas
             query = conn.createStatement();
             query.execute("CREATE TABLE IF NOT EXISTS Sitios("
@@ -228,8 +231,7 @@ public class App extends javax.swing.JFrame {
                 updateTabla(nombreTabla);
             }
         } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(contenedor, "Esta fila no se puede eliminar ya que esta referenciada en la tabla objetos ", "Atención!", JOptionPane.WARNING_MESSAGE);
-            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(contenedor, "Esta fila no se puede eliminar ya que esta referenciada en la tabla objetos ", "Atención!", JOptionPane.WARNING_MESSAGE);
         }
     }
 

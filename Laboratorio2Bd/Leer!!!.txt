@@ -1,0 +1,1 @@
+Debido a que las fechas las modelamos e implementamos con tipo DATE, debimos modificar el archivo "Inserta_Datos" otorgado por la cátedra, por lo que es importante asegurarse que el programa se ejecute con nuestro archivo modificado "Inserta_Datos2".
