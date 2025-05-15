@@ -169,6 +169,7 @@ public class App extends javax.swing.JFrame {
                     sql = new StringBuilder(); // Reiniciar para la siguiente sentencia
                 }
             }
+            
             query.execute("INSERT INTO Personas VALUES(25544555 ,'Rodolphe', 'Rominov', 'rrominovm@sciencedaily.com', 7135986253)");
             query.execute("DELETE FROM Personas WHERE P_DNI = '40417189'");
             bArchivo.close();
@@ -466,7 +467,7 @@ public class App extends javax.swing.JFrame {
         arqueologosPanelLayout.setVerticalGroup(
             arqueologosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(arqueologosPanelLayout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
+                .addContainerGap(57, Short.MAX_VALUE)
                 .addComponent(seleccionarVistaPersonasBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -481,13 +482,13 @@ public class App extends javax.swing.JFrame {
         jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel31.setText("Bienvenido!");
 
-        jLabel32.setIcon(new javax.swing.ImageIcon("C:\\Users\\facun\\Documents\\Facultad\\3er Año\\1er Cuatri\\Base de Datos\\Unidades\\Laboratorio 2\\Laboratorio2DB\\Laboratorio2Bd\\src\\main\\java\\images\\UNSL.png")); // NOI18N
+        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dpto Informática.png"))); // NOI18N
         jLabel32.setText("jLabel32");
 
-        jLabel33.setIcon(new javax.swing.ImageIcon("C:\\Users\\facun\\Documents\\Facultad\\3er Año\\1er Cuatri\\Base de Datos\\Unidades\\Laboratorio 2\\Laboratorio2DB\\Laboratorio2Bd\\src\\main\\java\\images\\FCFMyN.png")); // NOI18N
+        jLabel33.setIcon(new javax.swing.ImageIcon(getClass().getResource("/FCFMyN.png"))); // NOI18N
         jLabel33.setText("jLabel33");
 
-        jLabel34.setIcon(new javax.swing.ImageIcon("C:\\Users\\facun\\Documents\\Facultad\\3er Año\\1er Cuatri\\Base de Datos\\Unidades\\Laboratorio 2\\Laboratorio2DB\\Laboratorio2Bd\\src\\main\\java\\images\\Dpto Informática.png")); // NOI18N
+        jLabel34.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UNSL.png"))); // NOI18N
         jLabel34.setText("jLabel34");
 
         javax.swing.GroupLayout inicioPanelLayout = new javax.swing.GroupLayout(inicioPanel);
@@ -495,7 +496,7 @@ public class App extends javax.swing.JFrame {
         inicioPanelLayout.setHorizontalGroup(
             inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inicioPanelLayout.createSequentialGroup()
-                .addGap(306, 306, 306)
+                .addGap(315, 315, 315)
                 .addGroup(inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(inicioPanelLayout.createSequentialGroup()
                         .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -509,12 +510,12 @@ public class App extends javax.swing.JFrame {
                     .addGroup(inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jSeparator2)
                         .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(320, Short.MAX_VALUE))
+                .addContainerGap(311, Short.MAX_VALUE))
         );
         inicioPanelLayout.setVerticalGroup(
             inicioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inicioPanelLayout.createSequentialGroup()
-                .addGap(164, 164, 164)
+                .addGap(107, 107, 107)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel31)
@@ -848,7 +849,7 @@ public class App extends javax.swing.JFrame {
         cajasPanelLayout.setVerticalGroup(
             cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cajasPanelLayout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
+                .addContainerGap(51, Short.MAX_VALUE)
                 .addGroup(cajasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(seleccionarVistaCajasBtn)
                     .addComponent(mostrarPorPesoBtn))
@@ -930,7 +931,7 @@ public class App extends javax.swing.JFrame {
                 .addGroup(resumenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(cantidadCajas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(181, Short.MAX_VALUE))
+                .addContainerGap(192, Short.MAX_VALUE))
         );
 
         objetosPanel.setPreferredSize(new java.awt.Dimension(862, 553));
