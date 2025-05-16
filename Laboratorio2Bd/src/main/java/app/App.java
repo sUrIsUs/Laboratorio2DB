@@ -31,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 
 public class App extends javax.swing.JFrame {
@@ -57,6 +58,7 @@ public class App extends javax.swing.JFrame {
         
         // Inicio ejecución
         initComponents();
+
         showPanel(inicioPanel);
         
         // Muestro fecha
@@ -697,8 +699,7 @@ public class App extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, agregarObjetosPanelLayout.createSequentialGroup()
                         .addComponent(cancelarObjetoBtn)
                         .addGap(10, 10, 10)
-                        .addComponent(ingresarObjetoBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(ingresarObjetoBtn)))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         agregarObjetosPanelLayout.setVerticalGroup(
@@ -950,17 +951,6 @@ public class App extends javax.swing.JFrame {
 
         objetosPanel.setPreferredSize(new java.awt.Dimension(862, 553));
 
-        tablaObjetos.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
         tablaObjetos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tablaObjetos);
 
@@ -1178,7 +1168,7 @@ public class App extends javax.swing.JFrame {
                             .addComponent(agregarObjetoBtn)
                             .addComponent(modificarObjetoBtn)
                             .addComponent(eliminarObjetoBtn))
-                        .addGap(0, 12, Short.MAX_VALUE))))
+                        .addGap(0, 33, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
@@ -1502,7 +1492,7 @@ public class App extends javax.swing.JFrame {
             else{
                 String sql = "INSERT INTO Objetos VALUES(?, ?, ?, ?, ?, ?, ?, ?, " + "'" + sdf.format(fechaRegistroObjTF.getDate()) + "'" + ", ?, ?, ?, ?, ?, ?::tipo)";
                 p_query = conn.prepareStatement(sql);
-                p_query.setString(1, codigoObjTF.getText());
+                p_query.setString(1, codigoObjTF.getText().toUpperCase());
                 p_query.setString(2, nombreObjTF.getText());
                 p_query.setString(3, tipoExtraccionObjTF.getText());
                 p_query.setFloat(4, Float.parseFloat(altoObjTF.getText()));
@@ -1512,8 +1502,8 @@ public class App extends javax.swing.JFrame {
                 p_query.setInt(8, Integer.parseInt(cantidadObjTF.getText()));
                 p_query.setString(9, descripcionObjTF.getText());
                 p_query.setString(10, origenObjTF.getText());
-                p_query.setString(11, codigoCuadriculaObjTF.getText());
-                p_query.setString(12, codigoCajaObjTF.getText());
+                p_query.setString(11, codigoCuadriculaObjTF.getText().toUpperCase());
+                p_query.setString(12, codigoCajaObjTF.getText().toUpperCase());
                 p_query.setString(13, dniPersonaObjTF.getText());
                 String tipoEnum = tipoObjCB.getSelectedItem().equals("Litico") ? "L" : "C";
                 p_query.setString(14, tipoEnum);
