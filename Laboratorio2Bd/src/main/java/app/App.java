@@ -18,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -27,9 +28,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -42,6 +46,9 @@ public class App extends javax.swing.JFrame {
     String [] months = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     HashMap<String, JTable> mapTablas = new HashMap<>();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    JComponent [] objectComponents;
+//    JComponent [] archeologComponents;
+//    JComponent [] boxComponents;
     
     // Constantes para la base de datos
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
@@ -55,9 +62,11 @@ public class App extends javax.swing.JFrame {
     private static ResultSet result = null;
     
     public App() throws SQLException {
+        //this.archeologComponents = new JComponent[]{  }
         
         // Inicio ejecución
         initComponents();
+        this.objectComponents = new JComponent[]{ codigoObjModTF, nombreObjModTF, tipoExtraccionObjModTF, altoObjModTF, largoObjModTF, espesorObjModTF, pesoObjModTF, cantidadObjModTF, fechaRegistroObjModTF, descripcionObjModTF, origenObjModTF, codigoCuadriculaObjModTF, codigoCajaObjModTF, dniPersonaObjModTF, tipoObjModCB};
 
         showPanel(inicioPanel);
         
@@ -282,6 +291,32 @@ public class App extends javax.swing.JFrame {
         if(fechaFin.getTime()-fechaInicio.getTime()<0) throw new FechasCruzadas();
     }
     
+    public void cargarModificarTextFields(JTable table, JComponent[] components) throws ParseException{
+        try{
+            int selectedRow = table.getSelectedRow();
+            for(int i = 0; i < components.length; i++){
+                String value = table.getValueAt(selectedRow, i).toString();
+                System.out.println("Procesando componente " + i + ": " + components[i].getClass().getName() + " (Valor de celda: " + value + ")");
+
+                if(components[i] instanceof JTextField jTextField){
+                    jTextField.setText(value);
+                    System.out.println("Entre instance of jtextfield");
+                } else if (components[i] instanceof JDateChooser jDateChooser){
+                    Date fecha = sdf.parse(value);
+                    jDateChooser.setDate(fecha);
+                    System.out.println("Entre instance of jdate");
+                } else if(components[i] instanceof JComboBox){
+                    JComboBox<String> comboBox = (JComboBox<String>) components[i];
+                    String valorParaSeleccionar = value != null ? value : "";
+                    comboBox.setSelectedItem(valorParaSeleccionar);
+                    System.out.println("Entre instance of jchooser");
+                }
+            }
+        }
+        catch(ArrayIndexOutOfBoundsException evt1) {
+            JOptionPane.showMessageDialog(contenedor, "Seleccione un proyecto","Atención!",JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -387,6 +422,41 @@ public class App extends javax.swing.JFrame {
         pesoMinimoObjetos = new javax.swing.JTextField();
         separadorObjetos2 = new javax.swing.JSeparator();
         mostrarTodosBtn = new javax.swing.JButton();
+        fechaAuxTF = new javax.swing.JTextField();
+        modificarObjetosPanel = new javax.swing.JPanel();
+        codigoObjModTF = new javax.swing.JTextField();
+        nombreObjModTF = new javax.swing.JTextField();
+        tipoExtraccionObjModTF = new javax.swing.JTextField();
+        altoObjModTF = new javax.swing.JTextField();
+        largoObjModTF = new javax.swing.JTextField();
+        espesorObjModTF = new javax.swing.JTextField();
+        pesoObjModTF = new javax.swing.JTextField();
+        cantidadObjModTF = new javax.swing.JTextField();
+        descripcionObjModTF = new javax.swing.JTextField();
+        origenObjModTF = new javax.swing.JTextField();
+        codigoCuadriculaObjModTF = new javax.swing.JTextField();
+        codigoCajaObjModTF = new javax.swing.JTextField();
+        dniPersonaObjModTF = new javax.swing.JTextField();
+        jLabel35 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        jLabel37 = new javax.swing.JLabel();
+        jLabel38 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel40 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        jLabel44 = new javax.swing.JLabel();
+        jLabel45 = new javax.swing.JLabel();
+        jLabel46 = new javax.swing.JLabel();
+        jLabel47 = new javax.swing.JLabel();
+        jLabel48 = new javax.swing.JLabel();
+        tipoObjModCB = new javax.swing.JComboBox<>();
+        jLabel49 = new javax.swing.JLabel();
+        jLabel50 = new javax.swing.JLabel();
+        fechaRegistroObjModTF = new com.toedter.calendar.JDateChooser();
+        ingresarObjetoBtn1 = new javax.swing.JButton();
+        cancelarObjetoBtn1 = new javax.swing.JButton();
         header = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
         todayDate = new javax.swing.JLabel();
@@ -645,9 +715,9 @@ public class App extends javax.swing.JFrame {
                             .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
                                 .addGap(160, 160, 160)
                                 .addComponent(jLabel17)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(tipoExtraccionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(195, 195, 195)
+                                .addGap(201, 201, 201)
                                 .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(67, 67, 67)
                                 .addComponent(origenObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -709,10 +779,9 @@ public class App extends javax.swing.JFrame {
                 .addComponent(jLabel30)
                 .addGap(67, 67, 67)
                 .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
+                    .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(codigoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel15))
-                    .addComponent(codigoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jLabel23))
@@ -721,25 +790,25 @@ public class App extends javax.swing.JFrame {
                         .addComponent(fechaRegistroObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(4, 4, 4)
                 .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
+                    .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(nombreObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel16))
-                    .addComponent(nombreObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(jLabel24))
                     .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(descripcionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(14, 14, 14)
-                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tipoExtraccionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel25)
+                        .addComponent(origenObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(agregarObjetosPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel17)
-                            .addComponent(jLabel25)
-                            .addComponent(origenObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tipoExtraccionObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addGap(6, 6, 6)))
                 .addGap(14, 14, 14)
                 .addGroup(agregarObjetosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(altoObjTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -962,7 +1031,6 @@ public class App extends javax.swing.JFrame {
         });
 
         modificarObjetoBtn.setText("Modificar");
-        modificarObjetoBtn.setEnabled(false);
         modificarObjetoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 modificarObjetoBtnActionPerformed(evt);
@@ -1168,8 +1236,130 @@ public class App extends javax.swing.JFrame {
                             .addComponent(agregarObjetoBtn)
                             .addComponent(modificarObjetoBtn)
                             .addComponent(eliminarObjetoBtn))
-                        .addGap(0, 33, Short.MAX_VALUE))))
+                        .addGap(0, 19, Short.MAX_VALUE))))
         );
+
+        fechaAuxTF.setEditable(false);
+        fechaAuxTF.setText("jTextField1");
+
+        modificarObjetosPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        modificarObjetosPanel.add(codigoObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 111, 75, -1));
+        modificarObjetosPanel.add(nombreObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 151, 75, -1));
+        modificarObjetosPanel.add(tipoExtraccionObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 202, 75, -1));
+
+        altoObjModTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                altoObjModTFActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(altoObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 247, 75, -1));
+
+        largoObjModTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                largoObjModTFActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(largoObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 292, 75, -1));
+
+        espesorObjModTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                espesorObjModTFActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(espesorObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 328, 75, -1));
+        modificarObjetosPanel.add(pesoObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 368, 75, -1));
+        modificarObjetosPanel.add(cantidadObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 413, 75, -1));
+        modificarObjetosPanel.add(descripcionObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 161, 81, -1));
+
+        origenObjModTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                origenObjModTFActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(origenObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 210, 81, -1));
+
+        codigoCuadriculaObjModTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                codigoCuadriculaObjModTFActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(codigoCuadriculaObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 250, 81, -1));
+        modificarObjetosPanel.add(codigoCajaObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 292, 81, -1));
+        modificarObjetosPanel.add(dniPersonaObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(642, 328, 81, -1));
+
+        jLabel35.setText("Código");
+        modificarObjetosPanel.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 114, 43, -1));
+
+        jLabel36.setText("Nombre");
+        modificarObjetosPanel.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 154, 55, -1));
+
+        jLabel37.setText("Tipo extracción");
+        modificarObjetosPanel.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(154, 205, -1, -1));
+
+        jLabel38.setText("Alto");
+        modificarObjetosPanel.add(jLabel38, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 257, 43, -1));
+
+        jLabel39.setText("Largo");
+        modificarObjetosPanel.add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 292, 43, -1));
+
+        jLabel40.setText("Espesor");
+        modificarObjetosPanel.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 331, 62, -1));
+
+        jLabel41.setText("Peso");
+        modificarObjetosPanel.add(jLabel41, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 371, 43, -1));
+
+        jLabel42.setText("Cantidad");
+        modificarObjetosPanel.add(jLabel42, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 416, 70, -1));
+
+        jLabel43.setText("Fecha registro");
+        modificarObjetosPanel.add(jLabel43, new org.netbeans.lib.awtextra.AbsoluteConstraints(537, 121, 85, -1));
+
+        jLabel44.setText("Descripción");
+        modificarObjetosPanel.add(jLabel44, new org.netbeans.lib.awtextra.AbsoluteConstraints(537, 164, 73, -1));
+
+        jLabel45.setText("Origen");
+        modificarObjetosPanel.add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(537, 211, 43, -1));
+
+        jLabel46.setText("Código cuadricula");
+        modificarObjetosPanel.add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 250, 104, -1));
+
+        jLabel47.setText("Código caja");
+        modificarObjetosPanel.add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 295, 71, -1));
+
+        jLabel48.setText("DNI Arqueologo");
+        modificarObjetosPanel.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 338, -1, -1));
+
+        tipoObjModCB.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ceramico", "Litico" }));
+        tipoObjModCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tipoObjModCBActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(tipoObjModCB, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 380, -1, -1));
+
+        jLabel49.setText("Tipo");
+        modificarObjetosPanel.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 380, 43, -1));
+
+        jLabel50.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel50.setText("Ingrese la información del objeto");
+        modificarObjetosPanel.add(jLabel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(241, 18, 306, -1));
+        modificarObjetosPanel.add(fechaRegistroObjModTF, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 115, -1, -1));
+
+        ingresarObjetoBtn1.setText("Ingresar");
+        ingresarObjetoBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ingresarObjetoBtn1ActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(ingresarObjetoBtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(729, 447, -1, -1));
+
+        cancelarObjetoBtn1.setText("Cancelar");
+        cancelarObjetoBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarObjetoBtn1ActionPerformed(evt);
+            }
+        });
+        modificarObjetosPanel.add(cancelarObjetoBtn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(638, 447, -1, -1));
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
         contenedor.setLayout(contenedorLayout);
@@ -1188,23 +1378,43 @@ public class App extends javax.swing.JFrame {
                 .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(inicioPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(fechaAuxTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         contenedorLayout.setVerticalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 532, Short.MAX_VALUE)
+            .addGap(0, 534, Short.MAX_VALUE)
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(objetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
+                .addComponent(objetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(resumenPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(arqueologosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(cajasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
+                .addComponent(cajasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(agregarObjetosPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(contenedorLayout.createSequentialGroup()
                     .addComponent(inicioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(8, 8, 8)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(contenedorLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(fechaAuxTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
 
@@ -1415,7 +1625,12 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_eliminarCajasBtnActionPerformed
 
     private void modificarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarObjetoBtnActionPerformed
-       
+        try {
+            cargarModificarTextFields(tablaObjetos, objectComponents);
+            showPanel(modificarObjetosPanel);
+        } catch (ParseException ex) {
+            System.getLogger(App.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }//GEN-LAST:event_modificarObjetoBtnActionPerformed
 
     private void eliminarObjetoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarObjetoBtnActionPerformed
@@ -1550,6 +1765,38 @@ public class App extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cancelarObjetoBtnActionPerformed
 
+    private void altoObjModTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_altoObjModTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_altoObjModTFActionPerformed
+
+    private void largoObjModTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_largoObjModTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_largoObjModTFActionPerformed
+
+    private void espesorObjModTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_espesorObjModTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_espesorObjModTFActionPerformed
+
+    private void origenObjModTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_origenObjModTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_origenObjModTFActionPerformed
+
+    private void tipoObjModCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipoObjModCBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tipoObjModCBActionPerformed
+
+    private void ingresarObjetoBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarObjetoBtn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ingresarObjetoBtn1ActionPerformed
+
+    private void cancelarObjetoBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarObjetoBtn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cancelarObjetoBtn1ActionPerformed
+
+    private void codigoCuadriculaObjModTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codigoCuadriculaObjModTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_codigoCuadriculaObjModTFActionPerformed
+
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -1592,6 +1839,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton agregarObjetoBtn;
     private javax.swing.JPanel agregarObjetosPanel;
     private javax.swing.JButton agregarPersonasBtn;
+    private javax.swing.JTextField altoObjModTF;
     private javax.swing.JTextField altoObjTF;
     private javax.swing.JButton arqueologosBtn;
     private javax.swing.JPanel arqueologosPanel;
@@ -1601,29 +1849,40 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton cajasBtn;
     private javax.swing.JPanel cajasPanel;
     private javax.swing.JButton cancelarObjetoBtn;
+    private javax.swing.JButton cancelarObjetoBtn1;
     private javax.swing.JTextField cantidadArqueologos;
     private javax.swing.JTextField cantidadCajas;
     private javax.swing.JTextField cantidadCeramicos;
     private javax.swing.JTextField cantidadCuadriculas;
     private javax.swing.JTextField cantidadLiticos;
+    private javax.swing.JTextField cantidadObjModTF;
     private javax.swing.JTextField cantidadObjTF;
     private javax.swing.JTextField cantidadObjetos;
+    private javax.swing.JTextField codigoCajaObjModTF;
     private javax.swing.JTextField codigoCajaObjTF;
+    private javax.swing.JTextField codigoCuadriculaObjModTF;
     private javax.swing.JTextField codigoCuadriculaObjTF;
+    private javax.swing.JTextField codigoObjModTF;
     private javax.swing.JTextField codigoObjTF;
     private javax.swing.JTextField codigoObjetoTextField;
     private javax.swing.JPanel contenedor;
+    private javax.swing.JTextField descripcionObjModTF;
     private javax.swing.JTextField descripcionObjTF;
+    private javax.swing.JTextField dniPersonaObjModTF;
     private javax.swing.JTextField dniPersonaObjTF;
     private javax.swing.JButton eliminarCajasBtn;
     private javax.swing.JButton eliminarObjetoBtn;
     private javax.swing.JButton eliminarPersonasBtn;
+    private javax.swing.JTextField espesorObjModTF;
     private javax.swing.JTextField espesorObjTF;
+    private javax.swing.JTextField fechaAuxTF;
     private com.toedter.calendar.JDateChooser fechaFinBuscar;
     private com.toedter.calendar.JDateChooser fechaInicioBuscar;
+    private com.toedter.calendar.JDateChooser fechaRegistroObjModTF;
     private com.toedter.calendar.JDateChooser fechaRegistroObjTF;
     private javax.swing.JPanel header;
     private javax.swing.JButton ingresarObjetoBtn;
+    private javax.swing.JButton ingresarObjetoBtn1;
     private javax.swing.JPanel inicioPanel;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -1654,8 +1913,24 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
+    private javax.swing.JLabel jLabel45;
+    private javax.swing.JLabel jLabel46;
+    private javax.swing.JLabel jLabel47;
+    private javax.swing.JLabel jLabel48;
+    private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel50;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1666,19 +1941,24 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JTextField largoObjModTF;
     private javax.swing.JTextField largoObjTF;
     private javax.swing.JPanel menu;
     private javax.swing.JButton modificarCajasBtn;
     private javax.swing.JButton modificarObjetoBtn;
+    private javax.swing.JPanel modificarObjetosPanel;
     private javax.swing.JButton modificarPersonasBtn;
     private javax.swing.JButton mostrarPorPesoBtn;
     private javax.swing.JButton mostrarTodosBtn;
+    private javax.swing.JTextField nombreObjModTF;
     private javax.swing.JTextField nombreObjTF;
     private javax.swing.JButton objetosBtn;
     private javax.swing.JPanel objetosPanel;
+    private javax.swing.JTextField origenObjModTF;
     private javax.swing.JTextField origenObjTF;
     private javax.swing.JTextField pesoMaximoObjetos;
     private javax.swing.JTextField pesoMinimoObjetos;
+    private javax.swing.JTextField pesoObjModTF;
     private javax.swing.JTextField pesoObjTF;
     private javax.swing.JTextField pesoPromedioObjetos;
     private javax.swing.JButton resumenBtn;
@@ -1692,8 +1972,10 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTable tablaCajas;
     private javax.swing.JTable tablaObjetos;
     private javax.swing.JTable tablaPersonas;
+    private javax.swing.JTextField tipoExtraccionObjModTF;
     private javax.swing.JTextField tipoExtraccionObjTF;
     private javax.swing.JComboBox<String> tipoObjCB;
+    private javax.swing.JComboBox<String> tipoObjModCB;
     private javax.swing.JLabel title;
     private javax.swing.JLabel todayDate;
     // End of variables declaration//GEN-END:variables
