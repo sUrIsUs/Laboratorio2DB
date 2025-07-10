@@ -66,6 +66,7 @@ public class App extends javax.swing.JFrame {
         
         // Inicio ejecución
         initComponents();
+        this.setLocationRelativeTo(null);
         this.objectComponents = new JComponent[]{ codigoObjModTF, nombreObjModTF, tipoExtraccionObjModTF, altoObjModTF, largoObjModTF, espesorObjModTF, pesoObjModTF, cantidadObjModTF, fechaRegistroObjModTF, descripcionObjModTF, origenObjModTF, codigoCuadriculaObjModTF, codigoCajaObjModTF, dniPersonaObjModTF, tipoObjModCB};
 
         showPanel(inicioPanel);
@@ -312,6 +313,66 @@ public class App extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(contenedor, "Seleccione un proyecto","Atención!",JOptionPane.INFORMATION_MESSAGE);
         }
     }
+    
+        public static boolean isValidPhoneNumber(JTextField textField) {
+        String phoneNumber = textField.getText();
+
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            // Considera si un campo vacío es válido para tu aplicación.
+            // Para un número de teléfono, usualmente no lo sería.
+            JOptionPane.showMessageDialog(null, "El campo de teléfono no puede estar vacío.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Caracteres permitidos además de los dígitos: '+', '(', ')', '-', ' '
+        String allowedChars = "+()- ";
+
+        for (char c : phoneNumber.toCharArray()) {
+            // Verifica si el caracter es un dígito (0-9)
+            // O si es uno de los caracteres especiales permitidos
+            if (!Character.isDigit(c) && allowedChars.indexOf(c) == -1) {
+                JOptionPane.showMessageDialog(null, "El número de teléfono solo puede contener números y los caracteres +, -, (, ), espacio.", "Entrada Inválida", JOptionPane.ERROR_MESSAGE);
+                return false; // Se encontró un carácter no permitido
+            }
+        }
+        return true; // Todos los caracteres son válidos
+    }
+        
+            public static boolean isValidDNI(JTextField textField) {
+        String dni = textField.getText();
+
+        // 1. Verificar si el campo está vacío o solo contiene espacios en blanco
+        if (dni == null || dni.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "El campo DNI no puede estar vacío.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Eliminar cualquier punto o caracter que no sea un dígito, si se permiten formatos como 12.345.678
+        // Para una validación estricta de solo números, omite esta línea.
+        // String cleanedDNI = dni.replace(".", "").replace("-", "").trim();
+
+        // Para el DNI argentino, asumimos solo dígitos. Si se ingresan puntos, el usuario debe quitarlos.
+        String cleanedDNI = dni.trim(); // Solo eliminamos espacios al inicio/final
+
+        // 2. Verificar que todos los caracteres sean dígitos
+        for (char c : cleanedDNI.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                JOptionPane.showMessageDialog(null, "El DNI solo puede contener caracteres numéricos (0-9).", "Entrada Inválida", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
+        // 3. Verificar la longitud del DNI
+        // Los DNI en Argentina suelen tener 7 u 8 dígitos.
+        int length = cleanedDNI.length();
+        if (length < 7 || length > 8) {
+            JOptionPane.showMessageDialog(null, "El DNI debe tener entre 7 y 8 dígitos.", "Longitud Incorrecta", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Si pasa todas las validaciones, es un DNI válido
+        return true;
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -322,6 +383,20 @@ public class App extends javax.swing.JFrame {
         separadorHorizontalHeader = new javax.swing.JSeparator();
         separadorVerticalContainer = new javax.swing.JSeparator();
         contenedor = new javax.swing.JPanel();
+        agregarArquelogoPanel = new javax.swing.JPanel();
+        jLabel51 = new javax.swing.JLabel();
+        jLabel52 = new javax.swing.JLabel();
+        jLabel53 = new javax.swing.JLabel();
+        jLabel54 = new javax.swing.JLabel();
+        dniArqTF = new javax.swing.JTextField();
+        nombreArqTF = new javax.swing.JTextField();
+        apellidoArqTF = new javax.swing.JTextField();
+        mailArqTF = new javax.swing.JTextField();
+        jLabel55 = new javax.swing.JLabel();
+        jLabel56 = new javax.swing.JLabel();
+        telefonoArqTF = new javax.swing.JTextField();
+        cancelarAgregarArqBtn = new javax.swing.JButton();
+        ingresarAgregarArqBtn = new javax.swing.JButton();
         arqueologosPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaPersonas = new javax.swing.JTable();
@@ -474,6 +549,118 @@ public class App extends javax.swing.JFrame {
         separadorVerticalContainer.setOrientation(javax.swing.SwingConstants.VERTICAL);
         background.add(separadorVerticalContainer, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, -1, 540));
 
+        jLabel51.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel51.setText("Ingrese la información del arqueólogo");
+
+        jLabel52.setText("DNI");
+
+        jLabel53.setText("Nombre");
+
+        jLabel54.setText("Apellido");
+
+        dniArqTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dniArqTFActionPerformed(evt);
+            }
+        });
+
+        mailArqTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mailArqTFActionPerformed(evt);
+            }
+        });
+
+        jLabel55.setText("E-Mail");
+
+        jLabel56.setText("Teléfono");
+
+        cancelarAgregarArqBtn.setText("Cancelar");
+        cancelarAgregarArqBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarAgregarArqBtnActionPerformed(evt);
+            }
+        });
+
+        ingresarAgregarArqBtn.setText("Ingresar");
+        ingresarAgregarArqBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ingresarAgregarArqBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout agregarArquelogoPanelLayout = new javax.swing.GroupLayout(agregarArquelogoPanel);
+        agregarArquelogoPanel.setLayout(agregarArquelogoPanelLayout);
+        agregarArquelogoPanelLayout.setHorizontalGroup(
+            agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                        .addGap(233, 233, 233)
+                        .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                        .addGap(265, 265, 265)
+                        .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel53)
+                                .addGap(18, 18, 18)
+                                .addComponent(nombreArqTF))
+                            .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel54)
+                                        .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                                            .addComponent(jLabel52, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(16, 16, 16)))
+                                    .addComponent(jLabel55))
+                                .addGap(18, 18, 18)
+                                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(mailArqTF)
+                                    .addComponent(apellidoArqTF)
+                                    .addComponent(dniArqTF)))
+                            .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel56)
+                                .addGap(18, 18, 18)
+                                .addComponent(telefonoArqTF, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))))
+                .addContainerGap(274, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, agregarArquelogoPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(cancelarAgregarArqBtn)
+                .addGap(32, 32, 32)
+                .addComponent(ingresarAgregarArqBtn)
+                .addGap(39, 39, 39))
+        );
+        agregarArquelogoPanelLayout.setVerticalGroup(
+            agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(agregarArquelogoPanelLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jLabel51)
+                .addGap(113, 113, 113)
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel52)
+                    .addComponent(dniArqTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel53)
+                    .addComponent(nombreArqTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel54)
+                    .addComponent(apellidoArqTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(mailArqTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel55))
+                .addGap(30, 30, 30)
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel56)
+                    .addComponent(telefonoArqTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addGroup(agregarArquelogoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cancelarAgregarArqBtn)
+                    .addComponent(ingresarAgregarArqBtn))
+                .addGap(26, 26, 26))
+        );
+
         tablaPersonas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -504,7 +691,6 @@ public class App extends javax.swing.JFrame {
         });
 
         agregarPersonasBtn.setText("Agregar");
-        agregarPersonasBtn.setEnabled(false);
         agregarPersonasBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 agregarPersonasBtnActionPerformed(evt);
@@ -1393,6 +1579,8 @@ public class App extends javax.swing.JFrame {
                     .addContainerGap()
                     .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addContainerGap()))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(agregarArquelogoPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contenedorLayout.setVerticalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1416,6 +1604,8 @@ public class App extends javax.swing.JFrame {
                     .addContainerGap()
                     .addComponent(modificarObjetosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(8, 8, 8)))
+            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(agregarArquelogoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         background.add(contenedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 70, 850, 530));
@@ -1599,7 +1789,7 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_cajasBtnActionPerformed
 
     private void agregarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarPersonasBtnActionPerformed
-        
+        showPanel(agregarArquelogoPanel);
     }//GEN-LAST:event_agregarPersonasBtnActionPerformed
 
     private void modificarPersonasBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarPersonasBtnActionPerformed
@@ -1851,6 +2041,50 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_codigoObjModTFActionPerformed
 
+    private void mailArqTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailArqTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mailArqTFActionPerformed
+
+    private void dniArqTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dniArqTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dniArqTFActionPerformed
+
+    private void cancelarAgregarArqBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarAgregarArqBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cancelarAgregarArqBtnActionPerformed
+
+    private void ingresarAgregarArqBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarAgregarArqBtnActionPerformed
+        try {
+            if (dniArqTF.getText().equals("") || nombreArqTF.getText().equals("")
+                    || apellidoArqTF.getText().equals("") || mailArqTF.getText().equals("")
+                    || telefonoArqTF.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos...");
+            } else if (Integer.parseInt(dniArqTF.getText()) < 0 || telefonoArqTF.getText().length() < 10 
+                        || telefonoArqTF.getText().length() > 15
+                        || !isValidPhoneNumber(telefonoArqTF) || !isValidDNI(dniArqTF)) {
+                JOptionPane.showMessageDialog(contenedor, "Ingrese un valor válido", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String sql = "INSERT INTO Personas VALUES(?, ?, ?, ?, ?)";
+                p_query = conn.prepareStatement(sql);
+                p_query.setInt(1, Integer.parseInt(dniArqTF.getText()));
+                p_query.setString(2, nombreArqTF.getText());
+                p_query.setString(3, apellidoArqTF.getText());
+                p_query.setString(4, mailArqTF.getText().toLowerCase());
+                p_query.setString(5, telefonoArqTF.getText());
+                if (JOptionPane.showConfirmDialog(null, "Está seguro de agregar el arqueologo?", "Mensaje de confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == 0) {
+                    p_query.execute();
+                    updateTabla("Objetos");
+                    actualizarInformacionObjetos();
+                }
+                showPanel(objetosPanel);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(contenedor, "Ingrese un valor valido", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(contenedor, "Verifique que todos los campos esten correctamente ingresados", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_ingresarAgregarArqBtnActionPerformed
+
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -1890,12 +2124,14 @@ public class App extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton actualizarObjetoBtn;
+    private javax.swing.JPanel agregarArquelogoPanel;
     private javax.swing.JButton agregarCajasBtn;
     private javax.swing.JButton agregarObjetoBtn;
     private javax.swing.JPanel agregarObjetosPanel;
     private javax.swing.JButton agregarPersonasBtn;
     private javax.swing.JTextField altoObjModTF;
     private javax.swing.JTextField altoObjTF;
+    private javax.swing.JTextField apellidoArqTF;
     private javax.swing.JButton arqueologosBtn;
     private javax.swing.JPanel arqueologosPanel;
     private javax.swing.JPanel background;
@@ -1903,6 +2139,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton buscarFecha;
     private javax.swing.JButton cajasBtn;
     private javax.swing.JPanel cajasPanel;
+    private javax.swing.JButton cancelarAgregarArqBtn;
     private javax.swing.JButton cancelarObjetoBtn;
     private javax.swing.JButton cancelarObjetoModBtn;
     private javax.swing.JTextField cantidadArqueologos;
@@ -1923,6 +2160,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JPanel contenedor;
     private javax.swing.JTextField descripcionObjModTF;
     private javax.swing.JTextField descripcionObjTF;
+    private javax.swing.JTextField dniArqTF;
     private javax.swing.JTextField dniPersonaObjModTF;
     private javax.swing.JTextField dniPersonaObjTF;
     private javax.swing.JButton eliminarCajasBtn;
@@ -1935,6 +2173,7 @@ public class App extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser fechaRegistroObjModTF;
     private com.toedter.calendar.JDateChooser fechaRegistroObjTF;
     private javax.swing.JPanel header;
+    private javax.swing.JButton ingresarAgregarArqBtn;
     private javax.swing.JButton ingresarObjetoBtn;
     private javax.swing.JPanel inicioPanel;
     private javax.swing.JComboBox<String> jComboBox1;
@@ -1984,6 +2223,12 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel50;
+    private javax.swing.JLabel jLabel51;
+    private javax.swing.JLabel jLabel52;
+    private javax.swing.JLabel jLabel53;
+    private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel55;
+    private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1996,6 +2241,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField largoObjModTF;
     private javax.swing.JTextField largoObjTF;
+    private javax.swing.JTextField mailArqTF;
     private javax.swing.JPanel menu;
     private javax.swing.JButton modificarCajasBtn;
     private javax.swing.JButton modificarObjetoBtn;
@@ -2003,6 +2249,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JButton modificarPersonasBtn;
     private javax.swing.JButton mostrarPorPesoBtn;
     private javax.swing.JButton mostrarTodosBtn;
+    private javax.swing.JTextField nombreArqTF;
     private javax.swing.JTextField nombreObjModTF;
     private javax.swing.JTextField nombreObjTF;
     private javax.swing.JButton objetosBtn;
@@ -2025,6 +2272,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTable tablaCajas;
     private javax.swing.JTable tablaObjetos;
     private javax.swing.JTable tablaPersonas;
+    private javax.swing.JTextField telefonoArqTF;
     private javax.swing.JTextField tipoExtraccionObjModTF;
     private javax.swing.JTextField tipoExtraccionObjTF;
     private javax.swing.JComboBox<String> tipoObjCB;
