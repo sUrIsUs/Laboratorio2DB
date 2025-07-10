@@ -121,13 +121,6 @@
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Group type="103" rootIndex="8" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="fechaAuxTF" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -159,13 +152,6 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="modificarObjetosPanel" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="103" rootIndex="8" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="fechaAuxTF" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -210,7 +196,7 @@
                               <Component id="agregarPersonasBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="modificarPersonasBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="17" max="32767" attributes="0"/>
+                          <EmptySpace pref="58" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -225,15 +211,13 @@
                   <SubComponents>
                     <Component class="javax.swing.JTable" name="tablaPersonas">
                       <Properties>
-                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="4" rowCount="4">
-                            <Column editable="true" title="Title 1" type="java.lang.Object"/>
-                            <Column editable="true" title="Title 2" type="java.lang.Object"/>
-                            <Column editable="true" title="Title 3" type="java.lang.Object"/>
-                            <Column editable="true" title="Title 4" type="java.lang.Object"/>
-                          </Table>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;        {null, null, null, null},&#xa;        {null, null, null, null},&#xa;        {null, null, null, null},&#xa;        {null, null, null, null}&#xa;    },&#xa;    new String [] {&#xa;        &quot;Title 1&quot;, &quot;Title 2&quot;, &quot;Title 3&quot;, &quot;Title 4&quot;&#xa;    }&#xa;)" type="code"/>
                         </Property>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="tablaPersonas.getTableHeader().setReorderingAllowed(false);"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -393,56 +377,6 @@
                                       </Group>
                                       <Group type="102" attributes="0">
                                           <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
-                                          <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="tipoExtraccionObjTF" min="-2" pref="75" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="201" max="-2" attributes="0"/>
-                                          <Component id="jLabel25" min="-2" pref="43" max="-2" attributes="0"/>
-                                          <EmptySpace min="67" pref="67" max="-2" attributes="0"/>
-                                          <Component id="origenObjTF" min="-2" pref="81" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
-                                          <Component id="jLabel18" min="-2" pref="43" max="-2" attributes="0"/>
-                                          <EmptySpace min="57" pref="57" max="-2" attributes="0"/>
-                                          <Component id="altoObjTF" min="-2" pref="75" max="-2" attributes="0"/>
-                                          <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
-                                          <Component id="jLabel26" min="-2" pref="104" max="-2" attributes="0"/>
-                                          <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                          <Component id="codigoCuadriculaObjTF" min="-2" pref="81" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
-                                          <Component id="jLabel19" min="-2" pref="43" max="-2" attributes="0"/>
-                                          <EmptySpace min="57" pref="57" max="-2" attributes="0"/>
-                                          <Component id="largoObjTF" min="-2" pref="75" max="-2" attributes="0"/>
-                                          <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
-                                          <Component id="jLabel27" min="-2" pref="71" max="-2" attributes="0"/>
-                                          <EmptySpace min="39" pref="39" max="-2" attributes="0"/>
-                                          <Component id="codigoCajaObjTF" min="-2" pref="81" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
-                                          <Component id="jLabel20" min="-2" pref="43" max="-2" attributes="0"/>
-                                          <EmptySpace min="57" pref="57" max="-2" attributes="0"/>
-                                          <Component id="espesorObjTF" min="-2" pref="75" max="-2" attributes="0"/>
-                                          <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
-                                          <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="22" pref="22" max="-2" attributes="0"/>
-                                          <Component id="dniPersonaObjTF" min="-2" pref="81" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
-                                          <Component id="jLabel21" min="-2" pref="43" max="-2" attributes="0"/>
-                                          <EmptySpace min="57" pref="57" max="-2" attributes="0"/>
-                                          <Component id="pesoObjTF" min="-2" pref="75" max="-2" attributes="0"/>
-                                          <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
-                                          <Component id="jLabel29" min="-2" pref="43" max="-2" attributes="0"/>
-                                          <EmptySpace min="67" pref="67" max="-2" attributes="0"/>
-                                          <Component id="tipoObjCB" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
                                           <Component id="jLabel22" min="-2" pref="70" max="-2" attributes="0"/>
                                           <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
                                           <Component id="cantidadObjTF" min="-2" pref="75" max="-2" attributes="0"/>
@@ -450,6 +384,67 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="241" max="-2" attributes="0"/>
                                           <Component id="jLabel30" min="-2" pref="306" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel18" min="-2" pref="43" max="-2" attributes="0"/>
+                                                  <EmptySpace min="-2" pref="327" max="-2" attributes="0"/>
+                                                  <Component id="jLabel26" min="-2" pref="104" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="tipoExtraccionObjTF" min="-2" pref="75" max="-2" attributes="0"/>
+                                                  <EmptySpace min="-2" pref="201" max="-2" attributes="0"/>
+                                                  <Component id="jLabel25" min="-2" pref="43" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="origenObjTF" min="-2" pref="81" max="-2" attributes="0"/>
+                                              <Component id="codigoCuadriculaObjTF" min="-2" pref="81" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Group type="102" attributes="0">
+                                                  <Component id="jLabel20" min="-2" pref="59" max="-2" attributes="0"/>
+                                                  <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                                                  <Component id="espesorObjTF" min="-2" pref="75" max="-2" attributes="0"/>
+                                                  <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
+                                                  <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="102" attributes="0">
+                                                  <Component id="jLabel21" min="-2" pref="43" max="-2" attributes="0"/>
+                                                  <EmptySpace min="57" pref="57" max="-2" attributes="0"/>
+                                                  <Component id="pesoObjTF" min="-2" pref="75" max="-2" attributes="0"/>
+                                                  <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
+                                                  <Component id="jLabel29" min="-2" pref="43" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="dniPersonaObjTF" min="-2" pref="81" max="-2" attributes="0"/>
+                                              <Component id="tipoObjCB" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="160" pref="160" max="-2" attributes="0"/>
+                                          <Component id="jLabel19" min="-2" pref="43" max="-2" attributes="0"/>
+                                          <EmptySpace min="57" pref="57" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="altoObjTF" min="-2" pref="75" max="-2" attributes="0"/>
+                                              <Group type="102" attributes="0">
+                                                  <Component id="largoObjTF" min="-2" pref="75" max="-2" attributes="0"/>
+                                                  <EmptySpace min="195" pref="195" max="-2" attributes="0"/>
+                                                  <Component id="jLabel27" min="-2" pref="71" max="-2" attributes="0"/>
+                                                  <EmptySpace min="39" pref="39" max="-2" attributes="0"/>
+                                                  <Component id="codigoCajaObjTF" min="-2" pref="81" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
                                       </Group>
                                   </Group>
                                   <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
@@ -460,7 +455,7 @@
                                   <Component id="ingresarObjetoBtn" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="44" max="32767" attributes="0"/>
+                          <EmptySpace pref="45" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -501,31 +496,30 @@
                           </Group>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
-                                  <Component id="origenObjTF" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                                  <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="origenObjTF" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="tipoExtraccionObjTF" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                              <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                                  <Component id="tipoExtraccionObjTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="altoObjTF" min="-2" max="-2" attributes="0"/>
                               <Component id="codigoCuadriculaObjTF" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                  <EmptySpace min="7" pref="7" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="altoObjTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                       <Component id="jLabel26" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace min="19" pref="19" max="-2" attributes="0"/>
+                          <EmptySpace min="16" pref="16" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
                               <Component id="largoObjTF" min="-2" max="-2" attributes="0"/>
@@ -537,28 +531,32 @@
                           <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="espesorObjTF" min="-2" max="-2" attributes="0"/>
-                              <Component id="dniPersonaObjTF" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                  <EmptySpace min="7" pref="7" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="dniPersonaObjTF" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
+                          <EmptySpace min="11" pref="11" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="pesoObjTF" min="-2" max="-2" attributes="0"/>
-                              <Component id="tipoObjCB" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                  <EmptySpace min="7" pref="7" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel29" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="jLabel29" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="tipoObjCB" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace min="19" pref="19" max="-2" attributes="0"/>
+                          <EmptySpace min="16" pref="16" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel22" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="cantidadObjTF" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -568,7 +566,7 @@
                               <Component id="cancelarObjetoBtn" min="-2" max="-2" attributes="0"/>
                               <Component id="ingresarObjetoBtn" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="47" max="32767" attributes="0"/>
+                          <EmptySpace pref="68" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -746,7 +744,7 @@
                           <Component id="mostrarPorPesoBtn" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="seleccionarVistaCajasBtn" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="41" max="32767" attributes="0"/>
+                          <EmptySpace pref="29" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -767,7 +765,7 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace pref="30" max="32767" attributes="0"/>
+                          <EmptySpace pref="23" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="seleccionarVistaCajasBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="mostrarPorPesoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -795,15 +793,13 @@
                   <SubComponents>
                     <Component class="javax.swing.JTable" name="tablaCajas">
                       <Properties>
-                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="4" rowCount="4">
-                            <Column editable="true" title="Title 1" type="java.lang.Object"/>
-                            <Column editable="true" title="Title 2" type="java.lang.Object"/>
-                            <Column editable="true" title="Title 3" type="java.lang.Object"/>
-                            <Column editable="true" title="Title 4" type="java.lang.Object"/>
-                          </Table>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="new javax.swing.table.DefaultTableModel(&#xa;    new Object [][] {&#xa;        {null, null, null, null},&#xa;        {null, null, null, null},&#xa;        {null, null, null, null},&#xa;        {null, null, null, null}&#xa;    },&#xa;    new String [] {&#xa;        &quot;Title 1&quot;, &quot;Title 2&quot;, &quot;Title 3&quot;, &quot;Title 4&quot;&#xa;    }&#xa;)" type="code"/>
                         </Property>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="tablaCajas.getTableHeader().setReorderingAllowed(false);"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -909,7 +905,7 @@
                               <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="cantidadCajas" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="122" max="32767" attributes="0"/>
+                          <EmptySpace pref="139" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1152,8 +1148,13 @@
                   <SubComponents>
                     <Component class="javax.swing.JTable" name="tablaObjetos">
                       <Properties>
-                        <Property name="autoResizeMode" type="int" value="0"/>
+                        <Property name="autoResizeMode" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="javax.swing.JTable.AUTO_RESIZE_OFF" type="code"/>
+                        </Property>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="tablaObjetos.getTableHeader().setReorderingAllowed(false);"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -1302,12 +1303,6 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JTextField" name="fechaAuxTF">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-                <Property name="text" type="java.lang.String" value="jTextField1"/>
-              </Properties>
-            </Component>
             <Container class="javax.swing.JPanel" name="modificarObjetosPanel">
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -1315,6 +1310,12 @@
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JTextField" name="codigoObjModTF">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codigoObjModTFActionPerformed"/>
+                  </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                       <AbsoluteConstraints x="260" y="111" width="75" height="-1"/>
@@ -1397,6 +1398,9 @@
                   </Constraints>
                 </Component>
                 <Component class="javax.swing.JTextField" name="codigoCuadriculaObjModTF">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codigoCuadriculaObjModTFActionPerformed"/>
                   </Events>
@@ -1407,6 +1411,9 @@
                   </Constraints>
                 </Component>
                 <Component class="javax.swing.JTextField" name="codigoCajaObjModTF">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                       <AbsoluteConstraints x="640" y="292" width="81" height="-1"/>
@@ -1414,9 +1421,12 @@
                   </Constraints>
                 </Component>
                 <Component class="javax.swing.JTextField" name="dniPersonaObjModTF">
+                  <Properties>
+                    <Property name="enabled" type="boolean" value="false"/>
+                  </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="642" y="328" width="81" height="-1"/>
+                      <AbsoluteConstraints x="640" y="340" width="81" height="-1"/>
                     </Constraint>
                   </Constraints>
                 </Component>
@@ -1611,12 +1621,12 @@
                     </Constraint>
                   </Constraints>
                 </Component>
-                <Component class="javax.swing.JButton" name="ingresarObjetoBtn1">
+                <Component class="javax.swing.JButton" name="actualizarObjetoBtn">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Ingresar"/>
+                    <Property name="text" type="java.lang.String" value="Actualizar"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ingresarObjetoBtn1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="actualizarObjetoBtnActionPerformed"/>
                   </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -1624,12 +1634,12 @@
                     </Constraint>
                   </Constraints>
                 </Component>
-                <Component class="javax.swing.JButton" name="cancelarObjetoBtn1">
+                <Component class="javax.swing.JButton" name="cancelarObjetoModBtn">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Cancelar"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelarObjetoBtn1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelarObjetoModBtnActionPerformed"/>
                   </Events>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
