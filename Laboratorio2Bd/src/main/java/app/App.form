@@ -97,7 +97,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <EmptySpace min="0" pref="996" max="32767" attributes="0"/>
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                      <Component id="objetosPanel" alignment="1" pref="996" max="32767" attributes="0"/>
+                      <Component id="objetosPanel" alignment="1" pref="850" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
                       <Component id="resumenPanel" alignment="0" max="32767" attributes="0"/>
@@ -106,7 +106,7 @@
                       <Component id="arqueologosPanel" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="4" groupAlignment="0" attributes="0">
-                      <Component id="cajasPanel" alignment="1" pref="996" max="32767" attributes="0"/>
+                      <Component id="cajasPanel" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="5" groupAlignment="0" attributes="0">
                       <Component id="agregarObjetosPanel" alignment="1" max="32767" attributes="0"/>
@@ -135,7 +135,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <EmptySpace min="0" pref="600" max="32767" attributes="0"/>
                   <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                      <Component id="objetosPanel" alignment="0" pref="600" max="32767" attributes="0"/>
+                      <Component id="objetosPanel" alignment="0" pref="534" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="2" groupAlignment="0" attributes="0">
                       <Component id="resumenPanel" alignment="0" max="32767" attributes="0"/>
@@ -144,7 +144,7 @@
                       <Component id="arqueologosPanel" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="4" groupAlignment="0" attributes="0">
-                      <Component id="cajasPanel" alignment="0" pref="600" max="32767" attributes="0"/>
+                      <Component id="cajasPanel" alignment="0" pref="534" max="32767" attributes="0"/>
                   </Group>
                   <Group type="103" rootIndex="5" groupAlignment="0" attributes="0">
                       <Component id="agregarObjetosPanel" alignment="1" max="32767" attributes="0"/>
@@ -916,7 +916,7 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace pref="89" max="32767" attributes="0"/>
+                          <EmptySpace pref="30" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="seleccionarVistaCajasBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="mostrarPorPesoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1133,81 +1133,87 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace min="610" pref="610" max="-2" attributes="0"/>
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="16" pref="16" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane1" min="-2" pref="524" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
+                                  <EmptySpace min="610" pref="610" max="-2" attributes="0"/>
+                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="16" pref="16" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="jScrollPane1" min="-2" pref="524" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
+                                          <Component id="agregarObjetoBtn" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="92" pref="92" max="-2" attributes="0"/>
+                                          <Component id="modificarObjetoBtn" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="93" pref="93" max="-2" attributes="0"/>
+                                          <Component id="eliminarObjetoBtn" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                                   <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
-                                  <Component id="agregarObjetoBtn" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="92" pref="92" max="-2" attributes="0"/>
-                                  <Component id="modificarObjetoBtn" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="93" pref="93" max="-2" attributes="0"/>
-                                  <Component id="eliminarObjetoBtn" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="codigoObjetoTextField" min="-2" pref="156" max="-2" attributes="0"/>
+                                          <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
+                                          <Component id="buscarCodigoObjeto" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="60" pref="60" max="-2" attributes="0"/>
+                                          <Component id="mostrarTodosBtn" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="separadorObjetos1" min="-2" pref="238" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="60" pref="60" max="-2" attributes="0"/>
+                                          <Component id="jLabel2" min="-2" pref="122" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="20" pref="20" max="-2" attributes="0"/>
+                                          <Component id="jLabel3" min="-2" pref="37" max="-2" attributes="0"/>
+                                          <EmptySpace min="93" pref="93" max="-2" attributes="0"/>
+                                          <Component id="jLabel4" min="-2" pref="37" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="fechaInicioBuscar" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="37" pref="37" max="-2" attributes="0"/>
+                                          <Component id="fechaFinBuscar" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="70" pref="70" max="-2" attributes="0"/>
+                                          <Component id="buscarFecha" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jSeparator1" min="-2" pref="229" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel5" min="-2" pref="157" max="-2" attributes="0"/>
+                                          <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
+                                          <Component id="cantidadLiticos" min="-2" pref="75" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel6" min="-2" pref="157" max="-2" attributes="0"/>
+                                          <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
+                                          <Component id="cantidadCeramicos" min="-2" pref="75" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="separadorObjetos2" min="-2" pref="238" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel9" min="-2" pref="138" max="-2" attributes="0"/>
+                                          <EmptySpace min="22" pref="22" max="-2" attributes="0"/>
+                                          <Component id="pesoMinimoObjetos" min="-2" pref="75" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jLabel7" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
+                                              <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="pesoPromedioObjetos" min="-2" pref="75" max="-2" attributes="0"/>
+                                              <Component id="pesoMaximoObjetos" min="-2" pref="75" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                  </Group>
                               </Group>
                           </Group>
-                          <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="codigoObjetoTextField" min="-2" pref="156" max="-2" attributes="0"/>
-                                  <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
-                                  <Component id="buscarCodigoObjeto" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="60" pref="60" max="-2" attributes="0"/>
-                                  <Component id="mostrarTodosBtn" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="separadorObjetos1" min="-2" pref="238" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="60" pref="60" max="-2" attributes="0"/>
-                                  <Component id="jLabel2" min="-2" pref="122" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="20" pref="20" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" min="-2" pref="37" max="-2" attributes="0"/>
-                                  <EmptySpace min="93" pref="93" max="-2" attributes="0"/>
-                                  <Component id="jLabel4" min="-2" pref="37" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="fechaInicioBuscar" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="37" pref="37" max="-2" attributes="0"/>
-                                  <Component id="fechaFinBuscar" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="70" pref="70" max="-2" attributes="0"/>
-                                  <Component id="buscarFecha" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="jSeparator1" min="-2" pref="229" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel5" min="-2" pref="157" max="-2" attributes="0"/>
-                                  <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
-                                  <Component id="cantidadLiticos" min="-2" pref="75" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel6" min="-2" pref="157" max="-2" attributes="0"/>
-                                  <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
-                                  <Component id="cantidadCeramicos" min="-2" pref="75" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="separadorObjetos2" min="-2" pref="238" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel7" min="-2" pref="81" max="-2" attributes="0"/>
-                                  <EmptySpace min="79" pref="79" max="-2" attributes="0"/>
-                                  <Component id="pesoMaximoObjetos" min="-2" pref="75" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="79" pref="79" max="-2" attributes="0"/>
-                                  <Component id="pesoPromedioObjetos" min="-2" pref="75" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Component id="jLabel9" min="-2" pref="138" max="-2" attributes="0"/>
-                                  <EmptySpace min="22" pref="22" max="-2" attributes="0"/>
-                                  <Component id="pesoMinimoObjetos" min="-2" pref="75" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1256,16 +1262,16 @@
                                   </Group>
                                   <EmptySpace min="24" pref="24" max="-2" attributes="0"/>
                                   <Component id="separadorObjetos2" min="-2" pref="10" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                                      <Component id="pesoMaximoObjetos" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="pesoMaximoObjetos" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                                      <Component id="pesoPromedioObjetos" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="pesoPromedioObjetos" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                                       <Component id="pesoMinimoObjetos" min="-2" max="-2" attributes="0"/>
@@ -1280,7 +1286,7 @@
                                       <Component id="modificarObjetoBtn" min="-2" max="-2" attributes="0"/>
                                       <Component id="eliminarObjetoBtn" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="85" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="38" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -1433,6 +1439,9 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pesoPromedioObjetosActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JTextField" name="pesoMinimoObjetos">
                   <Properties>
