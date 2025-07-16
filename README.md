@@ -7,6 +7,6 @@ A partir de una realidad que requiere de un sistema para el almacenamiento de da
 
 ## Preview
 
-<img width="1001" height="634" alt="Screenshot from 2025-07-12 16-51-45" src="https://github.com/user-attachments/assets/347de719-5016-4556-a15a-5781802b1ab1" />
+<img width="1000" height="632" alt="Screenshot from 2025-07-16 15-28-02" src="https://github.com/user-attachments/assets/616712c4-e9d4-4690-b775-686915f55af7" />
 
-<img width="1002" height="633" alt="Screenshot from 2025-07-12 17-01-44" src="https://github.com/user-attachments/assets/cf16565b-ea4b-4414-aaf6-3fb87ea6d5a7" />
+<img width="1000" height="632" alt="Screenshot from 2025-07-16 15-27-06" src="https://github.com/user-attachments/assets/f6f72d55-c75c-427b-bb13-941244bea34b" />
